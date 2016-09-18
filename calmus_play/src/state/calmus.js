@@ -32,7 +32,7 @@ class Client extends TCPBase {
 const calmusState = State('calmus', {
   initial: {
     attackList: [],
-    channelList: [],
+    channelsList: [],
     pitchList: [],
     durationList: [],
     velocityList: [],
@@ -46,7 +46,7 @@ const calmusState = State('calmus', {
     attackList: payload
   }),
   setChannelList: (state, payload) => ({
-    channelList: payload
+    channelsList: payload
   }),
   setPitchList: (state, payload) => ({
     pitchList: payload
@@ -117,3 +117,5 @@ function ab2str(buf) {
 function handleCalmusData(calmusData) {
   console.log("handle calmus data not defined")
 }
+
+window.calmusstate = calmusState;

@@ -5,6 +5,7 @@ import {Component} from 'jumpsuit'
 
 export default Component({
   render() {
+    var offset=this.props.offset;
     return (
       <div className="form-group col-sm-4">
         <label htmlFor={this.props.id} className="col-sm-3 control-label">{this.props.label}</label>
@@ -12,7 +13,7 @@ export default Component({
           <select className="form-control" id={this.props.id} value={this.props.value} onChange={this.props.eventhandler} >
             <option disabled value>{this.props.default_text}</option>
             {this.props.data.map((option, index) =>
-              <Option key={index} id={index} name={option}/>
+              <Option key={index} id={Number(index)+Number(offset)} name={option}/>
             )}
           </select>
         </div>

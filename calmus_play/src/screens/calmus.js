@@ -40,6 +40,7 @@ export default Component({
 
   render() {
     return (
+      <div>
       <form className="form-horizontal">
         <div className="form-group">
           <label className="col-sm-1 control-label" htmlFor="Transpose">Transpose</label>
@@ -84,6 +85,7 @@ export default Component({
           value={this.props.sizeValue}
           default_text="Select Composition Type"
           eventhandler={eventValueHandler.bind(this, uistate.setSize)}
+          offset="1"
 
         />
         <Option
@@ -93,6 +95,7 @@ export default Component({
           value={this.props.colorValue}
           default_text="Select Composition Color"
           eventhandler={eventValueHandler.bind(this, uistate.setColor)}
+          offset="1"
         />
         <Option
           data={this.props.intervalOptions}
@@ -101,6 +104,7 @@ export default Component({
           value={this.props.intervalValue}
           default_text="Select Harmony Interval"
           eventhandler={eventValueHandler.bind(this, uistate.setInteval)}
+          offset="2"
         />
         <Option
           data={this.props.polyphonyOptions}
@@ -109,6 +113,7 @@ export default Component({
           value={this.props.polyphonyValue}
           default_text="Select Harmony Polyphony"
           eventhandler={eventValueHandler.bind(this, uistate.setPolyphony)}
+          offset="1"
         />
         <Option
           data={this.props.scaleOptions}
@@ -117,12 +122,18 @@ export default Component({
           value={this.props.scaleValue}
           default_text="Select Scale"
           eventhandler={eventValueHandler.bind(this, uistate.setScale)}
+          offset="0"
         />
         <div className="form-group col-sm-12">
           <button className="btn btn-default" id="callCalmus">Compose</button>
         </div>
-
       </form>
+        <input readOnly placeholder="Attack list" className="form-control" id="attacklist" type="text" value={this.props.attackList} />
+        <input readOnly placeholder="Channel list" className="form-control" id="channelslist" type="text" value={this.props.channelsList} />
+        <input readOnly placeholder="Pitch list" className="form-control" id="pitchlist" type="text" value={this.props.pitchList} />
+        <input readOnly placeholder="Duration list" className="form-control" id="durationlist" type="text" value={this.props.durationList} />
+        <input readOnly placeholder="Velocity list" className="form-control" id="velocitylist" type="text" value={this.props.velocityList} />
+      </div>
     )
   }
 }, (state) => ({
@@ -137,5 +148,10 @@ export default Component({
   colorValue: state.uistate.colorValue,
   intervalValue: state.uistate.intervalValue,
   polyphonyValue: state.uistate.polyphonyValue,
-  scaleValue: state.uistate.scaleValue
+  scaleValue: state.uistate.scaleValue,
+  attackList: state.calmusstate.attackList,
+  channelsList: state.calmusstate.channelsList,
+  pitchList: state.calmusstate.pitchList,
+  durationList: state.calmusstate.durationList,
+  velocityList: state.calmusstate.velocityList,
 }))
