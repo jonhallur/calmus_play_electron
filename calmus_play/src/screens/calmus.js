@@ -32,7 +32,7 @@ export default Component({
       this.props.polyphonyValue,
       this.props.scaleValue,
     ];
-    let valueString = values.join(' ');
+    let valueString = values.join('/');
     console.log("valuestring =>", valueString);
     sendCalmusRequest(valueString);
 
@@ -125,7 +125,7 @@ export default Component({
           offset="0"
         />
         <div className="form-group col-sm-12">
-          <button className="btn btn-default" id="callCalmus">Compose</button>
+          <button className="btn btn-default" id="callCalmus" onClick={this.onComposeClick}>Compose</button>
         </div>
       </form>
         <input readOnly placeholder="Attack list" className="form-control" id="attacklist" type="text" value={this.props.attackList} />

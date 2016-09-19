@@ -2,10 +2,22 @@
  * Created by jonh on 18.9.2016.
  */
 import {State} from 'jumpsuit'
+import axios from 'axios'
 //const ipc = require('electron').ipcRenderer;
 
 console.log(process);
+/*
+var exampleSocket = new WebSocket("ws://89.160.214.32:9001");
 
+exampleSocket.onopen = function (event) {
+  console.log("socket is open");
+};
+
+exampleSocket.onmessage = function (event) {
+  console.log(event.data);
+}
+
+*/
 /*
 class Client extends TCPBase {
   getHeader() {
@@ -76,33 +88,19 @@ function onSentCallback(args) {
 }
 
 export function sendCalmusRequest(requestString) {
-  console.log("send to calmus =>",requestString)
-  /*
-  var body = str2ab(requestString);
-  const client = new Client({
-    host: '89.160.214.32',
-    port: 9001,
-  });
-  const data = new Buffer(8 + body.length);
-  data.writeInt32BE(1, 0);
-  data.writeInt32BE(body.length, 4);
-  body.copy(data, 8, 0);
+  console.log("send to calmus =>",requestString);
+  //var exampleSocket = new WebSocket("ws://89.160.214.32:9001");
+  //exampleSocket.send("0 0 1 2 3 4 5")
+  var xhr = new XMLHttpRequest();
+  var server = 'http://89.160.214.32:9001/';
 
-  client.send({
-    id: 1,
-    data,
-    timeout: 5000,
-  }, (err, res) => {
-    if (err) {
-      console.error(err);
-    }
-    console.log("message =>",res.toString()); // should echo 'hello'
-  });
-*/
+  xhr.open('POST', server + requestString, true);
+  xhr.send(requestString.replace(/\//g, ' '));
+
 }
 
 function str2ab(str) {
-  var buf = new ArrayBuffer(str.length);
+  var buf = new ArrayBuffer(str.length*2);
   var bufView = new Uint8Array(buf);
   for (var i=0, strLen=str.length; i < strLen; i++) {
     bufView[i] = str.charCodeAt(i);
