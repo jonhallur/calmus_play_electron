@@ -31,8 +31,9 @@ export default Component({
       this.props.intervalValue,
       this.props.polyphonyValue,
       this.props.scaleValue,
+      0
     ];
-    let valueString = values.join('/');
+    let valueString = values.join(' ');
     console.log("valuestring =>", valueString);
     sendCalmusRequest(valueString);
 
