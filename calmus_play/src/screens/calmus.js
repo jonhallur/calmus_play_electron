@@ -5,6 +5,9 @@ import {Component} from 'jumpsuit'
 import Option from '../components/input/options'
 import uistate from '../state/ui'
 import {sendCalmusRequest} from '../state/calmus'
+import {getMidiPorts, playComposition} from '../state/midi'
+import Led from '../components/led'
+import MidiSelector from '../components/midiselector'
 
 export function eventValueHandler(func, event) {
   func(event.target.value);
@@ -19,6 +22,7 @@ export default Component({
     uistate.setInteval('');
     uistate.setPolyphony('');
     uistate.setScale('');
+    getMidiPorts();
   },
 
   onComposeClick(event) {
@@ -36,6 +40,12 @@ export default Component({
     let valueString = values.join(' ');
     console.log("valuestring =>", valueString);
     sendCalmusRequest(valueString);
+
+  },
+
+  onPlayClick(event) {
+    event.preventDefault();
+    playComposition(this.props.midiEvents, this.props.midiOutId, this.props.tempo)
 
   },
 
@@ -79,80 +89,85 @@ export default Component({
             <input className="form-control" readOnly value={this.props.speedValue} />
           </div>
         </div>
-        <Option
-          data={this.props.sizeOptions}
-          label="Type"
-          id="size"
-          value={this.props.sizeValue}
-          default_text="Select Composition Type"
-          eventhandler={eventValueHandler.bind(this, uistate.setSize)}
-          offset="1"
+        <div className="form-group">
+          <Option
+            data={this.props.sizeOptions}
+            label="Type"
+            id="size"
+            value={this.props.sizeValue}
+            default_text="Select Composition Type"
+            eventhandler={eventValueHandler.bind(this, uistate.setSize)}
+            offset="1"
 
-        />
-        <Option
-          data={this.props.colorOptions}
-          label="Color"
-          id="color"
-          value={this.props.colorValue}
-          default_text="Select Composition Color"
-          eventhandler={eventValueHandler.bind(this, uistate.setColor)}
-          offset="1"
-        />
-        <Option
-          data={this.props.intervalOptions}
-          label="Interval"
-          id="interval"
-          value={this.props.intervalValue}
-          default_text="Select Harmony Interval"
-          eventhandler={eventValueHandler.bind(this, uistate.setInteval)}
-          offset="2"
-        />
-        <Option
-          data={this.props.polyphonyOptions}
-          label="Polyphony"
-          id="polyphony"
-          value={this.props.polyphonyValue}
-          default_text="Select Harmony Polyphony"
-          eventhandler={eventValueHandler.bind(this, uistate.setPolyphony)}
-          offset="1"
-        />
-        <Option
-          data={this.props.scaleOptions}
-          label="Scale"
-          id="scale"
-          value={this.props.scaleValue}
-          default_text="Select Scale"
-          eventhandler={eventValueHandler.bind(this, uistate.setScale)}
-          offset="0"
-        />
-        <div className="form-group col-sm-12">
+          />
+          <Option
+            data={this.props.colorOptions}
+            label="Color"
+            id="color"
+            value={this.props.colorValue}
+            default_text="Select Composition Color"
+            eventhandler={eventValueHandler.bind(this, uistate.setColor)}
+            offset="1"
+          />
+          <Option
+            data={this.props.intervalOptions}
+            label="Interval"
+            id="interval"
+            value={this.props.intervalValue}
+            default_text="Select Harmony Interval"
+            eventhandler={eventValueHandler.bind(this, uistate.setInteval)}
+            offset="2"
+          />
+          <Option
+            data={this.props.polyphonyOptions}
+            label="Polyphony"
+            id="polyphony"
+            value={this.props.polyphonyValue}
+            default_text="Select Harmony Polyphony"
+            eventhandler={eventValueHandler.bind(this, uistate.setPolyphony)}
+            offset="1"
+          />
+          <Option
+            data={this.props.scaleOptions}
+            label="Scale"
+            id="scale"
+            value={this.props.scaleValue}
+            default_text="Select Scale"
+            eventhandler={eventValueHandler.bind(this, uistate.setScale)}
+            offset="0"
+          />
+        </div>
+        <div className="form-group col-sm-2">
           <button className="btn btn-default" id="callCalmus" onClick={this.onComposeClick}>Compose</button>
         </div>
+        <div className="form-group col-sm-2">
+          <button className="btn btn-default" id="playMidi" onClick={this.onPlayClick}>Play</button>
+        </div>
       </form>
-        <input readOnly placeholder="Attack list" className="form-control" id="attacklist" type="text" value={this.props.attackList} />
-        <input readOnly placeholder="Channel list" className="form-control" id="channelslist" type="text" value={this.props.channelsList} />
-        <input readOnly placeholder="Pitch list" className="form-control" id="pitchlist" type="text" value={this.props.pitchList} />
-        <input readOnly placeholder="Duration list" className="form-control" id="durationlist" type="text" value={this.props.durationList} />
-        <input readOnly placeholder="Velocity list" className="form-control" id="velocitylist" type="text" value={this.props.velocityList} />
-      </div>
+      <MidiSelector />
+
+      <Led label="MIDI" state={this.props.midiAvailable} />
+      <Led label="Ready To Play" state={this.props.compositionReady} />
+    </div>
+
     )
   }
 }, (state) => ({
-  sizeOptions: state.uistate.size,
-  colorOptions: state.uistate.color,
-  intervalOptions: state.uistate.interval,
-  polyphonyOptions: state.uistate.polyphony,
-  scaleOptions: state.uistate.scale,
-  transposeValue: state.uistate.transposeValue,
-  speedValue: state.uistate.speedValue,
-  sizeValue: state.uistate.sizeValue,
-  colorValue: state.uistate.colorValue,
-  intervalValue: state.uistate.intervalValue,
-  polyphonyValue: state.uistate.polyphonyValue,
-  scaleValue: state.uistate.scaleValue,
-  attackList: state.calmusstate.attackList,
-  channelsList: state.calmusstate.channelsList,
-  pitchList: state.calmusstate.pitchList,
-  durationList: state.calmusstate.durationList,
-  velocityList: state.calmusstate.velocityList,
+  sizeOptions: state.ui_state.size,
+  colorOptions: state.ui_state.color,
+  intervalOptions: state.ui_state.interval,
+  polyphonyOptions: state.ui_state.polyphony,
+  scaleOptions: state.ui_state.scale,
+  transposeValue: state.ui_state.transposeValue,
+  speedValue: state.ui_state.speedValue,
+  sizeValue: state.ui_state.sizeValue,
+  colorValue: state.ui_state.colorValue,
+  intervalValue: state.ui_state.intervalValue,
+  polyphonyValue: state.ui_state.polyphonyValue,
+  scaleValue: state.ui_state.scaleValue,
+  compositionReady: state.calmus_state.compositionReady,
+  midiEvents: state.calmus_state.midiEventList,
+  midiAvailable: state.midi_state.available,
+  midiOutId: state.midi_state.out_id,
+  tempo: state.midi_state.tempo
 }))

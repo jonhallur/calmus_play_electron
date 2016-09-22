@@ -1,5 +1,6 @@
 
-import uistate from './ui'
-import calmusstate from './calmus'
+import ui_state from './ui'
+import calmus_state from './calmus'
+import midi_state from './midi'
 
-export default { uistate, calmusstate}
+export default { ui_state, calmus_state, midi_state }
