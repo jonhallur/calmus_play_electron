@@ -8,6 +8,7 @@ import {sendCalmusRequest} from '../state/calmus'
 import {getMidiPorts, playComposition} from '../state/midi'
 import Led from '../components/led'
 import MidiSelector from '../components/midiselector'
+import {NotificationManager} from 'react-notifications'
 
 export function eventValueHandler(func, event) {
   func(event.target.value);
@@ -35,10 +36,13 @@ export default Component({
       this.props.intervalValue,
       this.props.polyphonyValue,
       this.props.scaleValue,
-      0
     ];
+    let has_empty_strings = values.map(x => x === '');
+    if (has_empty_strings.reduce((a,b) => (a || b))) {
+      NotificationManager.error("Set all composition parameters", "Some Parameters not set", 5000);
+      return
+    }
     let valueString = values.join(' ');
-    console.log("valuestring =>", valueString);
     sendCalmusRequest(valueString);
 
   },
@@ -52,102 +56,115 @@ export default Component({
   render() {
     return (
       <div>
-      <form className="form-horizontal">
-        <div className="form-group">
-          <label className="col-sm-1 control-label" htmlFor="Transpose">Transpose</label>
-          <div className="col-sm-9">
-            <input
-              className=""
-              id="transpose"
-              type="range"
-              min="-20"
-              max="20"
-              step="1"
-              value={this.props.transposeValue}
-              onChange={eventValueHandler.bind(this, uistate.setTranspose)}
-            />
-          </div>
-          <div className="col-sm-2">
-            <input className="form-control" readOnly value={this.props.transposeValue} />
-          </div>
-        </div>
-        <div className="form-group">
-          <label className="col-sm-1" htmlFor="speed">Speed</label>
-          <div className="col-sm-9">
-            <input
-              className=""
-              id="speed"
-              type="range"
-              min="-100"
-              max="1000"
-              step="1"
-              value={this.props.speedValue}
-              onChange={eventValueHandler.bind(this, uistate.setSpeed)}
-            />
-          </div>
-          <div className="col-sm-2">
-            <input className="form-control" readOnly value={this.props.speedValue} />
-          </div>
-        </div>
-        <div className="form-group">
-          <Option
-            data={this.props.sizeOptions}
-            label="Type"
-            id="size"
-            value={this.props.sizeValue}
-            default_text="Select Composition Type"
-            eventhandler={eventValueHandler.bind(this, uistate.setSize)}
-            offset="1"
+        <div className="panel panel-default">
+          <div className="panel-body">
+            <form className="form-horizontal">
+              <div className="form-group">
+                <label className="col-sm-1 control-label" htmlFor="Transpose">Transpose</label>
+                <div className="col-sm-9">
+                  <input
+                    className=""
+                    id="transpose"
+                    type="range"
+                    min="-20"
+                    max="20"
+                    step="1"
+                    value={this.props.transposeValue}
+                    onChange={eventValueHandler.bind(this, uistate.setTranspose)}
+                  />
+                </div>
+                <div className="col-sm-2">
+                  <input className="form-control" readOnly value={this.props.transposeValue} />
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="col-sm-1" htmlFor="speed">Speed</label>
+                <div className="col-sm-9">
+                  <input
+                    className=""
+                    id="speed"
+                    type="range"
+                    min="-100"
+                    max="1000"
+                    step="1"
+                    value={this.props.speedValue}
+                    onChange={eventValueHandler.bind(this, uistate.setSpeed)}
+                  />
+                </div>
+                <div className="col-sm-2">
+                  <input className="form-control" readOnly value={this.props.speedValue} />
+                </div>
+              </div>
+              <div className="form-group">
+                <Option
+                  data={this.props.sizeOptions}
+                  label="Type"
+                  id="size"
+                  value={this.props.sizeValue}
+                  default_text="Select Composition Type"
+                  eventhandler={eventValueHandler.bind(this, uistate.setSize)}
+                  offset="1"
 
-          />
-          <Option
-            data={this.props.colorOptions}
-            label="Color"
-            id="color"
-            value={this.props.colorValue}
-            default_text="Select Composition Color"
-            eventhandler={eventValueHandler.bind(this, uistate.setColor)}
-            offset="1"
-          />
-          <Option
-            data={this.props.intervalOptions}
-            label="Interval"
-            id="interval"
-            value={this.props.intervalValue}
-            default_text="Select Harmony Interval"
-            eventhandler={eventValueHandler.bind(this, uistate.setInteval)}
-            offset="2"
-          />
-          <Option
-            data={this.props.polyphonyOptions}
-            label="Polyphony"
-            id="polyphony"
-            value={this.props.polyphonyValue}
-            default_text="Select Harmony Polyphony"
-            eventhandler={eventValueHandler.bind(this, uistate.setPolyphony)}
-            offset="1"
-          />
-          <Option
-            data={this.props.scaleOptions}
-            label="Scale"
-            id="scale"
-            value={this.props.scaleValue}
-            default_text="Select Scale"
-            eventhandler={eventValueHandler.bind(this, uistate.setScale)}
-            offset="0"
-          />
+                />
+                <Option
+                  data={this.props.colorOptions}
+                  label="Color"
+                  id="color"
+                  value={this.props.colorValue}
+                  default_text="Select Composition Color"
+                  eventhandler={eventValueHandler.bind(this, uistate.setColor)}
+                  offset="1"
+                />
+                <Option
+                  data={this.props.intervalOptions}
+                  label="Interval"
+                  id="interval"
+                  value={this.props.intervalValue}
+                  default_text="Select Harmony Interval"
+                  eventhandler={eventValueHandler.bind(this, uistate.setInteval)}
+                  offset="2"
+                />
+                <Option
+                  data={this.props.polyphonyOptions}
+                  label="Polyphony"
+                  id="polyphony"
+                  value={this.props.polyphonyValue}
+                  default_text="Select Harmony Polyphony"
+                  eventhandler={eventValueHandler.bind(this, uistate.setPolyphony)}
+                  offset="1"
+                />
+                <Option
+                  data={this.props.scaleOptions}
+                  label="Scale"
+                  id="scale"
+                  value={this.props.scaleValue}
+                  default_text="Select Scale"
+                  eventhandler={eventValueHandler.bind(this, uistate.setScale)}
+                  offset="0"
+                />
+              </div>
+              <div className="form-group col-sm-2">
+                <button className="btn btn-default" id="callCalmus" onClick={this.onComposeClick}>Compose</button>
+              </div>
+              <div className="form-group col-sm-2">
+                <button className="btn btn-default" id="playMidi" onClick={this.onPlayClick}>Play</button>
+              </div>
+            </form>
+          </div>
         </div>
-        <div className="form-group col-sm-2">
-          <button className="btn btn-default" id="callCalmus" onClick={this.onComposeClick}>Compose</button>
+      <div className="panel panel-default">
+        <div className="panel-body">
+          <MidiSelector />
+          <div className="form-group col-sm-4">
+            <div className="form-group col-sm-6">
+              <Led label="MIDI Ready" state={this.props.midiAvailable} />
+            </div>
+            <div className="form-group col-sm-6">
+              <Led label="Ready To Play" state={this.props.compositionReady} />
+            </div>
+          </div>
         </div>
-        <div className="form-group col-sm-2">
-          <button className="btn btn-default" id="playMidi" onClick={this.onPlayClick}>Play</button>
-        </div>
-      </form>
-      <MidiSelector />
-
-      <Led label="MIDI" state={this.props.midiAvailable} />
-      <Led label="Ready To Play" state={this.props.compositionReady} />
+      </div>
     </div>
 
     )

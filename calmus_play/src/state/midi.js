@@ -3,6 +3,7 @@
  */
 import {State} from 'jumpsuit'
 import WebMidi from 'webmidi';
+import {NotificationManager} from 'react-notifications'
 
 
 const MS_PER_MINUTE = 60000;
@@ -84,10 +85,10 @@ export function setMidiOutput(id) {
 
 export function playComposition(midiEventList, out_id, tempo) {
   if (midiEventList.length === 0 ) {
-    console.log("nothing to play")
+    NotificationManager.error("Compose first", "No Composition", 3000 );
   }
   else if(out_id === '') {
-    console.log("no output selected")
+    NotificationManager.error("Select MIDI output", "No MIDI output selected", 3000);
   }
   else {
 

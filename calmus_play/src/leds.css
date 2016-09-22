@@ -1,29 +1,23 @@
 .led-box {
-    height: 30px;
-    width: 25%;
-    margin: 10px 0;
+    height: 25px;
+    width: 100%;
+    margin: 10px 10px;
     float: left;
 }
 
-.led-box p {
+.led-label p {
     font-size: 12px;
-    text-align: center;
-    margin: 1em;
+    margin-left: 0.2em;
+    vertical-align: middle;
 }
 
-.led-red {
-    margin: 0 auto;
-    width: 24px;
-    height: 24px;
-    background-color: #F00;
-    border-radius: 50%;
-    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 12px;
-    -webkit-animation: blinkRed 0.5s infinite;
-    -moz-animation: blinkRed 0.5s infinite;
-    -ms-animation: blinkRed 0.5s infinite;
-    -o-animation: blinkRed 0.5s infinite;
-    animation: blinkRed 0.5s infinite;
+.led-label {
+    height: 25px;
+    float: left;
+    vertical-align: middle;
 }
+
+
 
 @-webkit-keyframes blinkRed {
     from { background-color: #F00; }
@@ -51,19 +45,7 @@
     to { background-color: #F00; }
 }
 
-.led-yellow {
-    margin: 0 auto;
-    width: 24px;
-    height: 24px;
-    background-color: #FF0;
-    border-radius: 50%;
-    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #808002 0 -1px 9px, #FF0 0 2px 12px;
-    -webkit-animation: blinkYellow 1s infinite;
-    -moz-animation: blinkYellow 1s infinite;
-    -ms-animation: blinkYellow 1s infinite;
-    -o-animation: blinkYellow 1s infinite;
-    animation: blinkYellow 1s infinite;
-}
+
 
 @-webkit-keyframes blinkYellow {
     from { background-color: #FF0; }
@@ -92,28 +74,61 @@
 }
 
 .led-green {
-    margin: 0 auto;
-    width: 24px;
-    height: 24px;
+    float: left;
+    margin: 2px 5px;
+    width: 20px;
+    height: 20px;
     background-color: #ABFF00;
     border-radius: 50%;
     box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, #89FF00 0 2px 12px;
 }
 
 .led-blue {
-    margin: 0 auto;
-    width: 24px;
-    height: 24px;
+    float: left;
+    margin: 2px 5px;
+    width: 20px;
+    height: 20px;
     background-color: #24E0FF;
     border-radius: 50%;
     box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #006 0 -1px 9px, #3F8CFF 0 2px 14px;
 }
 
 .led-gray {
-    margin: 0 auto;
-    width: 24px;
-    height: 24px;
+    float: left;
+    margin: 2px 5px;
+    width: 20px;
+    height: 20px;
     background-color: #ABABAB;
     border-radius: 50%;
-    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, #ABABAB 0 2px 12px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 -1px 3px 1px, inset #101010 0 -1px 9px, #ABABAB 0 1px 1px;
+}
+
+.led-red {
+    float: left;
+    margin: 2px 5px;
+    width: 20px;
+    height: 20px;
+    background-color: #F00;
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 12px;
+    -webkit-animation: blinkRed 0.5s infinite;
+    -moz-animation: blinkRed 0.5s infinite;
+    -ms-animation: blinkRed 0.5s infinite;
+    -o-animation: blinkRed 0.5s infinite;
+    animation: blinkRed 0.5s infinite;
+}
+
+.led-yellow {
+    float: left;
+    margin: 2px 5px;
+    width: 20px;
+    height: 20px;
+    background-color: #FF0;
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #808002 0 -1px 9px, #FF0 0 2px 12px;
+    -webkit-animation: blinkYellow 1s infinite;
+    -moz-animation: blinkYellow 1s infinite;
+    -ms-animation: blinkYellow 1s infinite;
+    -o-animation: blinkYellow 1s infinite;
+    animation: blinkYellow 1s infinite;
 }

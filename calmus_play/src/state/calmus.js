@@ -2,6 +2,8 @@
  * Created by jonh on 18.9.2016.
  */
 import {State} from 'jumpsuit'
+import {NotificationManager} from 'react-notifications';
+
 
 class MidiEvent {
   constructor(attack, channel, pitch, duration, velocity) {
@@ -59,7 +61,7 @@ const calmusState = State('calmus', {
 export default calmusState
 
 export function sendCalmusRequest(requestString) {
-  console.log("send to calmus =>",requestString);
+  NotificationManager.info("Connecting...", "Calmus", 2000);
   var exampleSocket = new WebSocket("ws://89.160.139.113:9001");
   calmusState.setWaitingForCalmus(true);
   calmusState.setCompositionReady(false);
@@ -67,13 +69,19 @@ export function sendCalmusRequest(requestString) {
 
   exampleSocket.onopen = function (stuff) {
     exampleSocket.send(requestString);
+    NotificationManager.info("Composing...", "Calmus", 2000);
     calmusState.setCalmusConnection(true)
   };
 
   exampleSocket.onmessage = function (message) {
     handleCalmusData(message.data);
+    NotificationManager.info("Composition Ready", "Calmus", 2000);
     calmusState.setCalmusConnection(false);
     calmusState.setWaitingForCalmus(false);
+  };
+
+  exampleSocket.onerror = function (error) {
+    NotificationManager.error('Connection to server failed', 'Calmus ERROR', 5000);
   };
 
   /*
