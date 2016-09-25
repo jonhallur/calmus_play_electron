@@ -11,7 +11,7 @@ export default Component({
   },
   onMidiOutChanged(event) {
     let out_id = event.target.value;
-    setMidiOutput(out_id);
+    setMidiOutput(out_id, this.props.midi_player);
   },
 
   render () {
@@ -50,4 +50,5 @@ export default Component({
   midiOuts: state.midi_state.outs,
   midi_in_id: state.midi_state.in_id,
   midi_out_id: state.midi_state.out_id,
+  midi_player: state.midi_player.player
 }))

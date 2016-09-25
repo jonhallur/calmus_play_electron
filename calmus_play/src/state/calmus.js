@@ -3,6 +3,7 @@
  */
 import {State} from 'jumpsuit'
 import {NotificationManager} from 'react-notifications';
+import {createMidiFile} from './player'
 
 
 class MidiEvent {
@@ -27,6 +28,7 @@ const calmusState = State('calmus', {
     payloadsReceived: 0,
     calmusConnection: false,
     waitingForCalmus: false,
+    requestString: ''
   },
 
   setAttackList: (state, payload) => ({
@@ -55,17 +57,19 @@ const calmusState = State('calmus', {
   }),
   setCompositionReady: (state, payload) => ({
     compositionReady: payload
+  }),
+  setRequestString: (state, payload) => ({
+    requestString: payload
   })
 });
 
 export default calmusState
 
-export function sendCalmusRequest(requestString) {
+export function sendCalmusRequest(requestString, out_id) {
   NotificationManager.info("Connecting...", "Calmus", 2000);
   var exampleSocket = new WebSocket("ws://89.160.139.113:9001");
   calmusState.setWaitingForCalmus(true);
   calmusState.setCompositionReady(false);
-
 
   exampleSocket.onopen = function (stuff) {
     exampleSocket.send(requestString);
@@ -74,8 +78,9 @@ export function sendCalmusRequest(requestString) {
   };
 
   exampleSocket.onmessage = function (message) {
-    handleCalmusData(message.data);
+    handleCalmusData(message.data, requestString);
     NotificationManager.info("Composition Ready", "Calmus", 2000);
+    calmusState.setRequestString(requestString);
     calmusState.setCalmusConnection(false);
     calmusState.setWaitingForCalmus(false);
   };
@@ -123,13 +128,14 @@ function createEventList(attackList, channelList, pitchList, durationList, veloc
   }
   return midiEventList;
 }
-function handleCalmusData(calmusData) {
+function handleCalmusData(calmusData, requestString) {
   let lists = calmusData.split('(');
   let attackList = lists[2].split(')')[0].split(' ');
   let channelList = lists[3].split(')')[0].split(' ');
   let pitchList = lists[4].split(')')[0].split(' ');
   let durationList = lists[5].split(')')[0].split(' ');
   let velocityList = lists[6].split(')')[0].split(' ');
+  let adjective = lists[6].split(')')[1];
 
   let midiEventList = createEventList(attackList, channelList, pitchList, durationList, velocityList);
 
@@ -139,9 +145,8 @@ function handleCalmusData(calmusData) {
   calmusState.setDurationList(durationList);
   calmusState.setVelocityList(velocityList);
   calmusState.setMidiEventList(midiEventList);
-
   calmusState.setCompositionReady(true);
-
+  createMidiFile(midiEventList, adjective + " " + requestString)
 }
 
 window.calmusstate = calmusState;

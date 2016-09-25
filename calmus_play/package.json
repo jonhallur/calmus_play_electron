@@ -21,8 +21,12 @@
     "bootstrap": "^3.3.7",
     "jumpsuit": "^0.7.5",
     "lodash": "^4.14.1",
+    "midifile": "^1.0.4",
     "midijs": "^0.12.0",
+    "midiplayer": "^1.0.0",
     "react-notifications": "^1.3.0",
-    "web-midi": "^2.0.1"
+    "react-progressbar": "^1.3.4",
+    "reactify": "^1.1.1",
+    "webmidi": "^2.0.0-beta.1"
   }
 }

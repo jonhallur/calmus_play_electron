@@ -6,12 +6,20 @@ import Option from '../components/input/options'
 import uistate from '../state/ui'
 import {sendCalmusRequest} from '../state/calmus'
 import {getMidiPorts, playComposition} from '../state/midi'
+import {playFromList, stopPlayback} from '../state/player'
 import Led from '../components/led'
 import MidiSelector from '../components/midiselector'
 import {NotificationManager} from 'react-notifications'
+import ProgressBar from 'react-progressbar'
 
 export function eventValueHandler(func, event) {
   func(event.target.value);
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 export default Component({
@@ -28,6 +36,10 @@ export default Component({
 
   onComposeClick(event) {
     event.preventDefault();
+    if (this.props.midiOutId === '') {
+      NotificationManager.error("Please select MIDI output", "MIDI Error", 3000);
+      return
+    }
     let values = [
       this.props.transposeValue,
       this.props.speedValue,
@@ -49,8 +61,31 @@ export default Component({
 
   onPlayClick(event) {
     event.preventDefault();
-    playComposition(this.props.midiEvents, this.props.midiOutId, this.props.tempo)
+    playComposition(this.props.midiEvents, this.props.midiOutId, this.props.tempo, this.props.requestString)
 
+  },
+
+  onRandomClick(event) {
+    event.preventDefault();
+    uistate.setTranspose(getRandomInt(-20,20));
+    uistate.setSpeed(getRandomInt(-100,1000));
+    uistate.setSize(getRandomInt(1,6));
+    uistate.setColor(getRandomInt(1,6));
+    uistate.setInteval(getRandomInt(2,7));
+    uistate.setPolyphony(getRandomInt(1,4));
+    uistate.setScale(getRandomInt(0,32));
+  },
+
+  onPlayBadgeClick(event) {
+    event.preventDefault();
+    let id = event.target.id;
+    playFromList(this.props.midiFiles, this.props.players, id, this.props.countdown)
+  },
+
+  onStopBadgeClick(event) {
+    event.preventDefault();
+    let id = event.target.id;
+    stopPlayback(this.props.players, id, this.props.countdown)
   },
 
   render() {
@@ -143,13 +178,11 @@ export default Component({
                   offset="0"
                 />
               </div>
-              <div className="form-group col-sm-2">
-                <button className="btn btn-default" id="callCalmus" onClick={this.onComposeClick}>Compose</button>
-              </div>
-              <div className="form-group col-sm-2">
-                <button className="btn btn-default" id="playMidi" onClick={this.onPlayClick}>Play</button>
-              </div>
             </form>
+            <div className="btn-toolbar">
+              <button type="button" className="btn btn-default btn-primary" id="callCalmus" onClick={this.onComposeClick}>Compose</button>
+              <button type="button" className="btn btn-default" id="randomSettings" onClick={this.onRandomClick}>Random</button>
+            </div>
           </div>
         </div>
       <div className="panel panel-default">
@@ -163,6 +196,28 @@ export default Component({
               <Led label="Ready To Play" state={this.props.compositionReady} />
             </div>
           </div>
+        </div>
+      </div>
+      <div className="panel panel-default">
+        <div className="panel-body">
+          <ProgressBar completed={(this.props.prog_bar_now / this.props.prog_bar_max)*100}/>
+          <ul className="list-group col-sm-4">
+            {this.props.midiFiles.map((midiFile, index) => (
+              <li className="list-group-item" id={index} key={index}>
+                <span id={index} className="badge">
+                  <a id={index} href="#" onClick={this.onPlayBadgeClick}>
+                    <span id={index} className="white-glyph glyphicon glyphicon-play" aria-hidden="true"></span>
+                  </a>
+                </span>
+                <span id={index} className="badge">
+                  <a id={index} href="#" onClick={this.onStopBadgeClick}>
+                    <span id={index} className="white-glyph glyphicon glyphicon-stop" aria-hidden="true"></span>
+                  </a>
+                </span>
+                {midiFile.name}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
@@ -186,5 +241,11 @@ export default Component({
   midiEvents: state.calmus_state.midiEventList,
   midiAvailable: state.midi_state.available,
   midiOutId: state.midi_state.out_id,
-  tempo: state.midi_state.tempo
+  tempo: state.midi_state.tempo,
+  requestString: state.calmus_state.requestString,
+  midiFiles: state.midi_player.files,
+  players: state.midi_player.players,
+  prog_bar_max: state.midi_player.current_length,
+  prog_bar_now: state.midi_player.current_position,
+  countdown: state.midi_player.interval
 }))
