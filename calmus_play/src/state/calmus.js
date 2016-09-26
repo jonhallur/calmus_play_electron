@@ -78,7 +78,7 @@ export function sendCalmusRequest(requestString, out_id) {
   };
 
   exampleSocket.onmessage = function (message) {
-    handleCalmusData(message.data, requestString);
+    handleCalmusData(message.data, requestString, out_id);
     NotificationManager.info("Composition Ready", "Calmus", 2000);
     calmusState.setRequestString(requestString);
     calmusState.setCalmusConnection(false);
@@ -128,7 +128,7 @@ function createEventList(attackList, channelList, pitchList, durationList, veloc
   }
   return midiEventList;
 }
-function handleCalmusData(calmusData, requestString) {
+function handleCalmusData(calmusData, requestString, out_id) {
   let lists = calmusData.split('(');
   let attackList = lists[2].split(')')[0].split(' ');
   let channelList = lists[3].split(')')[0].split(' ');
@@ -146,7 +146,7 @@ function handleCalmusData(calmusData, requestString) {
   calmusState.setVelocityList(velocityList);
   calmusState.setMidiEventList(midiEventList);
   calmusState.setCompositionReady(true);
-  createMidiFile(midiEventList, adjective + " " + requestString)
+  createMidiFile(midiEventList, adjective + " " + requestString, out_id)
 }
 
 window.calmusstate = calmusState;

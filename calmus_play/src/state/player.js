@@ -104,7 +104,7 @@ function createFileHeader() {
   return file;
 }
 
-export function createMidiFile(midiEvents, settings){
+export function createMidiFile(midiEvents, settings, out_id){
   var file = createFileHeader();
   let midi_channels = [];
   let last_event_time = [0,0,0];
@@ -127,7 +127,7 @@ export function createMidiFile(midiEvents, settings){
 
   });
   player.addFile({name: settings, data:binaryData});
-  let midiplayer = new MIDIPlayer({'output': WebMidi.getOutputById("0")._midiOutput});
+  let midiplayer = new MIDIPlayer({'output': WebMidi.getOutputById(out_id)._midiOutput});
   player.addPlayer(midiplayer);
 }
 
@@ -164,4 +164,20 @@ export function stopPlayback(players, id, interval) {
     player_inst.stop();
   }
   clearInterval(interval);
+}
+
+export function createDownload(filename,text) {
+  // Set up the link
+  var link = document.createElement("a");
+  link.setAttribute("target","_blank");
+  if(Blob !== undefined) {
+    var blob = new Blob([text], {type: "text/plain"});
+    link.setAttribute("href", URL.createObjectURL(blob));
+  } else {
+    link.setAttribute("href","data:text/plain," + encodeURIComponent(text));
+  }
+  link.setAttribute("download",filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
