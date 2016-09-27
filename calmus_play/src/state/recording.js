@@ -10,6 +10,8 @@ var recordingtime = 0;
 const upBeat = new Audio("pt_click1.wav");
 const downBeat = new Audio("pt_click2.wav");
 
+
+
 const recording = State('recording', {
   initial: {
     isRecording: false,
@@ -71,6 +73,8 @@ const recording = State('recording', {
 export default recording
 
 export function startRecording(intervalTime, metronome, sounds, in_id) {
+  recordingtime = WebMidi.time;
+  metronomecounter = 0;
   let intervalId = setInterval(function() {
     if(metronome) {
       sounds[metronomecounter%4].play();
@@ -85,21 +89,21 @@ export function startRecording(intervalTime, metronome, sounds, in_id) {
     'all',
     function(e) {
       console.log("noteon", e.note, WebMidi.time - recordingtime);
-      recording.addNoteOn({note: e.note.number, time: WebMidi.time - recordingtime, velocity: e.velocity})
+      recording.addNoteOn({note: e.note.number, time: (WebMidi.time - recordingtime), velocity: e.velocity})
     });
   input.addListener(
     'noteoff',
     'all',
     function(e) {
       console.log("noteoff", e.note, WebMidi.time - recordingtime);
-      recording.addNoteOff({note: e.note.number, time: WebMidi.time - recordingtime})
+      recording.addNoteOff({note: e.note.number, time: (WebMidi.time - recordingtime)})
     }
   );
   recording.setIntervalId(intervalId);
   recording.setInputHandle(input);
   recording.setIsRecording(true);
   recording.setReady(false);
-  recordingtime = WebMidi.time;
+
 }
 
 export function stopRecording(intervalId, inputHandle, noteOns, noteOffs, tickLength) {
