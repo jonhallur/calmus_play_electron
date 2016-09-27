@@ -4,17 +4,10 @@
 import {State} from 'jumpsuit'
 import {NotificationManager} from 'react-notifications';
 import {createMidiFile} from './player'
+import MidiEvent from '../pojos/midievent'
 
 
-class MidiEvent {
-  constructor(attack, channel, pitch, duration, velocity) {
-    this.attack = attack;
-    this.channel = channel;
-    this.pitch = pitch;
-    this.duration = duration;
-    this.velocity = velocity;
-  }
-}
+
 
 const calmusState = State('calmus', {
   initial: {
@@ -65,14 +58,45 @@ const calmusState = State('calmus', {
 
 export default calmusState
 
-export function sendCalmusRequest(requestString, out_id) {
+function createListsFromEventList(eventList) {
+  let attack = [];
+  let pitch = [];
+  let duration = [];
+  let velocity = [];
+  let lastTime = 0;
+  for (let midievent of eventList) {
+    attack.push(midievent.attack - lastTime);
+    pitch.push(midievent.pitch);
+    duration.push(midievent.duration);
+    velocity.push(midievent.velocity);
+    lastTime = midievent.attack;
+  }
+  let attackString = '(' + attack.join(' ') + ')';
+  let pitchString = '(' + pitch.join(' ') + ')';
+  let durationString = '(' + duration.join(' ') + ')';
+  let velocityString = '(' + velocity.join(' ') + ')';
+  return '('+attackString+pitchString+durationString+velocityString+')'
+}
+
+export function sendCalmusRequest(requestString, out_id, eventList) {
   NotificationManager.info("Connecting...", "Calmus", 2000);
   var exampleSocket = new WebSocket("ws://89.160.139.113:9001");
   calmusState.setWaitingForCalmus(true);
   calmusState.setCompositionReady(false);
 
   exampleSocket.onopen = function (stuff) {
-    exampleSocket.send(requestString);
+    if (eventList === undefined) {
+      exampleSocket.send(requestString);
+      NotificationManager.info("Composing...", "Calmus", 2000);
+    }
+    else {
+      let new_cell = createListsFromEventList(eventList);
+      console.log(new_cell);
+      exampleSocket.send(requestString+new_cell);
+      NotificationManager.info("Composing with Input...", "Calmus", 2000);
+
+    }
+
     NotificationManager.info("Composing...", "Calmus", 2000);
     calmusState.setCalmusConnection(true)
   };

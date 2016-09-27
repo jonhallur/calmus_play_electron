@@ -11,6 +11,7 @@ import Led from '../components/led'
 import MidiSelector from '../components/midiselector'
 import {NotificationManager} from 'react-notifications'
 import ProgressBar from 'react-progressbar'
+import MidiRecorder from '../components/midirecorder'
 
 export function eventValueHandler(func, event) {
   func(event.target.value);
@@ -34,12 +35,7 @@ export default Component({
     getMidiPorts();
   },
 
-  onComposeClick(event) {
-    event.preventDefault();
-    if (this.props.midiOutId === '') {
-      NotificationManager.error("Please select MIDI output", "MIDI Error", 3000);
-      return
-    }
+  getCompositionValues: function () {
     let values = [
       this.props.transposeValue,
       this.props.speedValue,
@@ -49,14 +45,33 @@ export default Component({
       this.props.polyphonyValue,
       this.props.scaleValue,
     ];
+    return values;
+  },
+
+  onComposeWithInput(event) {
+    this.onComposeClick(event, true)
+  },
+
+  onComposeClick(event, useInput) {
+    console.log(useInput);
+    event.preventDefault();
+    if (this.props.midiOutId === '') {
+      NotificationManager.error("Please select MIDI output", "MIDI Error", 3000);
+      return
+    }
+    var values = this.getCompositionValues();
     let has_empty_strings = values.map(x => x === '');
     if (has_empty_strings.reduce((a,b) => (a || b))) {
       NotificationManager.error("Set all composition parameters", "Some Parameters not set", 5000);
       return
     }
     let valueString = values.join(' ');
-    sendCalmusRequest(valueString, this.props.midiOutId);
-
+    if(useInput) {
+      sendCalmusRequest(valueString, this.props.midiOutId, this.props.recordingsList)
+    }
+    else {
+      sendCalmusRequest(valueString, this.props.midiOutId);
+    }
   },
 
   onPlayClick(event) {
@@ -187,8 +202,9 @@ export default Component({
               </div>
             </form>
             <div className="btn-toolbar">
-              <button type="button" className="btn btn-default btn-primary" id="callCalmus" onClick={this.onComposeClick}>Compose</button>
-              <button type="button" className="btn btn-default" id="randomSettings" onClick={this.onRandomClick}>Random</button>
+              <button type="button" className="btn btn-default btn-primary" onClick={this.onComposeClick}>Compose</button>
+              <button type="button" className="btn btn-default" onClick={this.onRandomClick}>Random</button>
+              <button type="button" className="btn btn-default" onClick={this.onComposeWithInput} disabled={!this.props.recordingReady}>ComposeInput</button>
             </div>
           </div>
         </div>
@@ -208,7 +224,7 @@ export default Component({
       <div className="panel panel-default">
         <div className="panel-body">
           <ProgressBar completed={(this.props.prog_bar_now / this.props.prog_bar_max)*100}/>
-          <ul className="list-group col-sm-4">
+          <ul className="list-group col-sm-6">
             {this.props.midiFiles.map((midiFile, index) => (
               <li className="list-group-item" id={index} key={index}>
                 <span id={index} className="badge">
@@ -230,6 +246,7 @@ export default Component({
               </li>
             ))}
           </ul>
+          <MidiRecorder />
         </div>
       </div>
     </div>
@@ -259,5 +276,7 @@ export default Component({
   players: state.midi_player.players,
   prog_bar_max: state.midi_player.current_length,
   prog_bar_now: state.midi_player.current_position,
-  countdown: state.midi_player.interval
+  countdown: state.midi_player.interval,
+  recordingReady: state.midi_recording.ready,
+  recordingsList: state.midi_recording.eventList
 }))

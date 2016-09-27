@@ -2,7 +2,7 @@
  * Created by jonh on 22.9.2016.
  */
 import {State} from 'jumpsuit'
-import midijs, {File} from 'midijs'
+import {File} from 'midijs'
 import MIDIPlayer from 'midiplayer'
 import MIDIFile from 'midifile'
 import WebMidi from 'webmidi'
@@ -25,7 +25,7 @@ const player = State('player', {
   },
 
   addFile: (state, payload) => ({
-    files: [...state.files, payload]
+    files: [payload, ...state.files]
   }),
 
   removeFile (state, payload) {
@@ -43,7 +43,7 @@ const player = State('player', {
   }),
 
   addPlayer: (state, payload) => ({
-    players: [...state.players, payload]
+    players: [payload, ...state.players]
   }),
 
   setInterval: (state,payload) => ({
