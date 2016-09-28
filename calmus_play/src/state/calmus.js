@@ -64,18 +64,24 @@ function createListsFromEventList(eventList) {
   let duration = [];
   let velocity = [];
   let lastTime = 0;
+
+
   for (let midievent of eventList) {
     attack.push(midievent.attack - lastTime);
     pitch.push(midievent.pitch);
-    duration.push(midievent.duration);
+    duration.push(midievent.duration-4);
     velocity.push(midievent.velocity);
     lastTime = midievent.attack;
   }
+  attack.splice(0,1);
+  attack.push(duration[duration.length-1]);
+
+  attack[attack.length-1] = duration[duration.length-1];
   let attackString = '(' + attack.join(' ') + ')';
   let pitchString = '(' + pitch.join(' ') + ')';
   let durationString = '(' + duration.join(' ') + ')';
   let velocityString = '(' + velocity.join(' ') + ')';
-  return attackString+pitchString+durationString+velocityString
+  return attackString+pitchString+durationString+velocityString+" "
 }
 
 export function sendCalmusRequest(requestString, out_id, eventList) {
@@ -97,7 +103,6 @@ export function sendCalmusRequest(requestString, out_id, eventList) {
 
     }
 
-    NotificationManager.info("Composing...", "Calmus", 2000);
     calmusState.setCalmusConnection(true)
   };
 

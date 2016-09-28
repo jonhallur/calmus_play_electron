@@ -4,6 +4,8 @@
 import {State} from 'jumpsuit'
 import WebMidi from 'webmidi'
 import MidiEvent from '../pojos/midievent'
+import * as clickTrack from '../pojos/metronome'
+
 
 var metronomecounter = 0;
 var recordingtime = 0;
@@ -71,6 +73,10 @@ const recording = State('recording', {
 export default recording
 
 export function startRecording(intervalTime, metronome, sounds, in_id) {
+  recordingtime = WebMidi.time;
+  clickTrack.play();
+  /*
+  metronomecounter = 0;
   let intervalId = setInterval(function() {
     if(metronome) {
       sounds[metronomecounter%4].play();
@@ -79,37 +85,39 @@ export function startRecording(intervalTime, metronome, sounds, in_id) {
   }, intervalTime);
   sounds[metronomecounter%4].play();
   metronomecounter++;
+  */
   let input = WebMidi.getInputById(in_id);
   input.addListener(
     'noteon',
     'all',
     function(e) {
       console.log("noteon", e.note, WebMidi.time - recordingtime);
-      recording.addNoteOn({note: e.note.number, time: WebMidi.time - recordingtime, velocity: e.velocity})
+      recording.addNoteOn({note: e.note.number, time: (WebMidi.time - recordingtime), velocity: e.velocity})
     });
   input.addListener(
     'noteoff',
     'all',
     function(e) {
       console.log("noteoff", e.note, WebMidi.time - recordingtime);
-      recording.addNoteOff({note: e.note.number, time: WebMidi.time - recordingtime})
+      recording.addNoteOff({note: e.note.number, time: (WebMidi.time - recordingtime)})
     }
   );
-  recording.setIntervalId(intervalId);
+  //recording.setIntervalId(intervalId);
   recording.setInputHandle(input);
   recording.setIsRecording(true);
   recording.setReady(false);
-  recordingtime = WebMidi.time;
+
 }
 
 export function stopRecording(intervalId, inputHandle, noteOns, noteOffs, tickLength) {
+  clickTrack.play();
   let recEndTime = WebMidi.time - recordingtime;
-  clearInterval(intervalId);
+  //clearInterval(intervalId);
   inputHandle.removeListener('noteon');
   inputHandle.removeListener('noteoff');
   recording.setIsRecording(false);
   recording.setInputHandle('');
-  recording.setIntervalId(0);
+  //recording.setIntervalId(0);
   recording.setEventList([]);
   metronomecounter = 0;
   if(noteOns.length === 0) {

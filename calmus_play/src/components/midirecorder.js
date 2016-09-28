@@ -3,10 +3,15 @@
  */
 import {Component} from 'jumpsuit'
 import {NotificationManager} from 'react-notifications'
-import {startRecording, stopRecording} from '../state/recording'
+import {startRecording, stopRecording, setupAudioContext} from '../state/recording'
+import {init} from '../pojos/metronome'
 
 
 export default Component({
+  componentDidMount() {
+    init();
+  },
+
   onStartRecButtonClick(event) {
     event.preventDefault();
     if(this.props.isRecording) {
