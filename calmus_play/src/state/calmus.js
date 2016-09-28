@@ -64,8 +64,6 @@ function createListsFromEventList(eventList) {
   let duration = [];
   let velocity = [];
   let lastTime = 0;
-
-
   for (let midievent of eventList) {
     attack.push(midievent.attack - lastTime);
     pitch.push(midievent.pitch);
@@ -81,11 +79,7 @@ function createListsFromEventList(eventList) {
   let pitchString = '(' + pitch.join(' ') + ')';
   let durationString = '(' + duration.join(' ') + ')';
   let velocityString = '(' + velocity.join(' ') + ')';
-<<<<<<< HEAD
-  return attackString+pitchString+durationString+velocityString+" "
-=======
   return attackString+pitchString+durationString+velocityString+"     "
->>>>>>> bb26c836892e0ab67a9d3681de8a7676e47b26aa
 }
 
 export function sendCalmusRequest(requestString, out_id, eventList) {
@@ -107,6 +101,7 @@ export function sendCalmusRequest(requestString, out_id, eventList) {
 
     }
 
+    NotificationManager.info("Composing...", "Calmus", 2000);
     calmusState.setCalmusConnection(true)
   };
 
