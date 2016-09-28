@@ -81,7 +81,11 @@ function createListsFromEventList(eventList) {
   let pitchString = '(' + pitch.join(' ') + ')';
   let durationString = '(' + duration.join(' ') + ')';
   let velocityString = '(' + velocity.join(' ') + ')';
+<<<<<<< HEAD
   return attackString+pitchString+durationString+velocityString+" "
+=======
+  return attackString+pitchString+durationString+velocityString+"     "
+>>>>>>> bb26c836892e0ab67a9d3681de8a7676e47b26aa
 }
 
 export function sendCalmusRequest(requestString, out_id, eventList) {

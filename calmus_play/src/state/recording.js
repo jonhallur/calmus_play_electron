@@ -12,6 +12,8 @@ var recordingtime = 0;
 const upBeat = new Audio("pt_click1.wav");
 const downBeat = new Audio("pt_click2.wav");
 
+
+
 const recording = State('recording', {
   initial: {
     isRecording: false,
@@ -74,8 +76,11 @@ export default recording
 
 export function startRecording(intervalTime, metronome, sounds, in_id) {
   recordingtime = WebMidi.time;
+<<<<<<< HEAD
   clickTrack.play();
   /*
+=======
+>>>>>>> bb26c836892e0ab67a9d3681de8a7676e47b26aa
   metronomecounter = 0;
   let intervalId = setInterval(function() {
     if(metronome) {
