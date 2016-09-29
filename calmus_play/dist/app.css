@@ -247,12 +247,45 @@
   content: "\f057";
 }
 
-a .white-glyph {
-  color: #d3d3d3;
+.white-glyph {
+  color: #fff;
 }
-a:active .white-glyph {
-  color: #d3d3d3;
+.white-glyph:hover {
+  color: #90ee90;
 }
-a .white-glyph :hoover {
+.player-line {
+  display: block;
+  background-color: #fff;
   color: #000;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+.player-content {
+  z-index: 9;
+  position: relative;
+  width: 100%;
+}
+.active-progress {
+  display: block;
+  height: 100%;
+  width: 0;
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  background: #add8e6;
+}
+.inactive-progress {
+  display: block;
+  height: 100%;
+  width: 0;
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  background: #fff;
+}
+.player-tools {
+  float: right;
 }

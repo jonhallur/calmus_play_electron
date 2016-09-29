@@ -44,11 +44,11 @@ export default Component({
     return (
       <div className="col-sm-6 btn-toolbar">
           <button className="btn btn-default" onClick={this.onStartRecButtonClick}>
-            <span className="white-glyph glyphicon glyphicon-registration-mark" aria-hidden="true"></span>
+            <span className="glyphicon glyphicon-registration-mark" aria-hidden="true"></span>
             Start Recording
           </button>
           <button className="btn btn-default" onClick={this.onStopRecButtonClick}>
-            <span className="white-glyph glyphicon glyphicon-stop" aria-hidden="true"></span>
+            <span className="glyphicon glyphicon-stop" aria-hidden="true"></span>
             Stop Recording
           </button>
       </div>

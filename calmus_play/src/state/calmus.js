@@ -100,8 +100,6 @@ export function sendCalmusRequest(requestString, out_id, eventList) {
       NotificationManager.info("Composing with Input...", "Calmus", 2000);
 
     }
-
-    NotificationManager.info("Composing...", "Calmus", 2000);
     calmusState.setCalmusConnection(true)
   };
 

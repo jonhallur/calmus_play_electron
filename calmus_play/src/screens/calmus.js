@@ -5,12 +5,12 @@ import {Component} from 'jumpsuit'
 import Option from '../components/input/options'
 import ui_state from '../state/ui'
 import {sendCalmusRequest} from '../state/calmus'
-import {getMidiPorts, playComposition} from '../state/midi'
-import {playFromList, stopPlayback, createDownload} from '../state/player'
+import {getMidiPorts} from '../state/midi'
+import {playFromList, stopPlayback, createDownload, createTestData} from '../state/player'
 import Led from '../components/led'
 import MidiSelector from '../components/midiselector'
 import {NotificationManager} from 'react-notifications'
-import ProgressBar from 'react-progressbar'
+import $ from 'jquery'
 import MidiRecorder from '../components/midirecorder'
 
 export function eventValueHandler(func, event) {
@@ -33,6 +33,9 @@ export default Component({
     ui_state.setPolyphony('');
     ui_state.setScale('');
     getMidiPorts();
+    setTimeout(function() {
+      createTestData();
+    }, 3000);
   },
 
   getCompositionValues: function () {
@@ -74,12 +77,6 @@ export default Component({
     }
   },
 
-  onPlayClick(event) {
-    event.preventDefault();
-    playComposition(this.props.midiEvents, this.props.midiOutId, this.props.tempo, this.props.requestString)
-
-  },
-
   onRandomClick(event) {
     event.preventDefault();
     ui_state.setTranspose(getRandomInt(-20,20));
@@ -94,6 +91,8 @@ export default Component({
   onPlayBadgeClick(event) {
     event.preventDefault();
     let id = event.target.id;
+    $('.active-progress').removeClass('active-progress').addClass('inactive-progress');
+    $('#' + id + ' .inactive-progress').addClass('active-progress').removeClass('inactive-progress');
     playFromList(this.props.midiFiles, this.props.players, id, this.props.countdown)
   },
 
@@ -111,6 +110,7 @@ export default Component({
   },
 
   render() {
+    var currentPos = 100 - (this.props.current_position / this.props.current_length) * 100;
     return (
       <div>
         <div className="panel panel-default">
@@ -223,26 +223,30 @@ export default Component({
       </div>
       <div className="panel panel-default">
         <div className="panel-body">
-          <ProgressBar completed={(this.props.prog_bar_now / this.props.prog_bar_max)*100}/>
-          <ul className="list-group col-sm-6">
+          <ul className="list-group col-sm-6 midi-player">
             {this.props.midiFiles.map((midiFile, index) => (
               <li className="list-group-item" id={index} key={index}>
-                <span id={index} className="badge">
-                  <a id={index} href="#" onClick={this.onPlayBadgeClick}>
-                    <span id={index} className="white-glyph glyphicon glyphicon-play" aria-hidden="true"></span>
-                  </a>
-                </span>
-                <span id={index} className="badge">
-                  <a id={index} href="#" onClick={this.onStopBadgeClick}>
-                    <span id={index} className="white-glyph glyphicon glyphicon-stop" aria-hidden="true"></span>
-                  </a>
-                </span>
-                <span id={index} className="badge">
-                  <a id={index} href="#" onClick={this.onDownloadBadgeClick}>
-                    <span id={index} className="white-glyph glyphicon glyphicon-save" aria-hidden="true"></span>
-                  </a>
-                </span>
-                {midiFile.name}
+                <div className="player-line">
+                  <div id={index} className="inactive-progress" style={{width: currentPos + "%"}} ></div>
+                  <div className="player-content">
+                    {midiFile.name}
+                    <span className="badge player-tools">
+                      <a id={index} href="#" onClick={this.onPlayBadgeClick}>
+                        <span id={index} className="white-glyph glyphicon glyphicon-play" aria-hidden="true"></span>
+                      </a>
+                    </span>
+                    <span className="badge player-tools">
+                      <a id={index} href="#" onClick={this.onStopBadgeClick}>
+                        <span id={index} className="white-glyph glyphicon glyphicon-stop" aria-hidden="true"></span>
+                      </a>
+                    </span>
+                    <span className="badge player-tools">
+                      <a id={index} href="#" onClick={this.onDownloadBadgeClick}>
+                        <span id={index} className="white-glyph glyphicon glyphicon-save" aria-hidden="true"></span>
+                      </a>
+                    </span>
+                  </div>
+                </div>
               </li>
             ))}
           </ul>
@@ -274,9 +278,9 @@ export default Component({
   requestString: state.calmus_state.requestString,
   midiFiles: state.midi_player.files,
   players: state.midi_player.players,
-  prog_bar_max: state.midi_player.current_length,
-  prog_bar_now: state.midi_player.current_position,
   countdown: state.midi_player.interval,
+  current_length: state.midi_player.current_length,
+  current_position: state.midi_player.current_position,
   recordingReady: state.midi_recording.ready,
   recordingsList: state.midi_recording.eventList
 }))

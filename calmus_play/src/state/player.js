@@ -7,7 +7,7 @@ import MIDIPlayer from 'midiplayer'
 import MIDIFile from 'midifile'
 import WebMidi from 'webmidi'
 import {NotificationManager} from 'react-notifications'
-
+import MidiEvent from '../pojos/midievent'
 
 const MS_PER_MINUTE = 60;
 const DEFAULT_TEMPO = 120;
@@ -40,6 +40,10 @@ const player = State('player', {
 
   tickCurrentPosition: (state, payload) => ({
     current_position: --state.current_position
+  }),
+
+  setCurrentPosition: (state, payload) => ({
+    current_position: 0
   }),
 
   addPlayer: (state, payload) => ({
@@ -107,7 +111,7 @@ function createFileHeader() {
 export function createMidiFile(midiEvents, settings, out_id){
   var file = createFileHeader();
   let midi_channels = [];
-  let last_event_time = [0,0,0];
+  let last_event_time = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   for(let event of midiEvents) {
     let track_number = midi_channels.indexOf(event.channel);
     if(track_number === -1) {
@@ -126,7 +130,7 @@ export function createMidiFile(midiEvents, settings, out_id){
     binaryData = data;
 
   });
-  player.addFile({name: settings, data:binaryData});
+  player.addFile({name: settings, data:binaryData, });
   let midiplayer = new MIDIPlayer({'output': WebMidi.getOutputById(out_id)._midiOutput});
   player.addPlayer(midiplayer);
 }
@@ -148,6 +152,7 @@ export function playFromList(compositions, players, id, interval) {
   let midiFile = new MIDIFile(data.buffer);
   player_instance.load(midiFile);
   let play_time = Math.round((player_instance.events.slice(-1)[0].playTime)/1000);
+  console.log("pl", player_instance.events);
   console.log("Expected Playtime", play_time);
   player.setCurrentLenght(play_time);
   let countdown = setInterval(function () {
@@ -156,6 +161,7 @@ export function playFromList(compositions, players, id, interval) {
   player.setInterval(countdown);
   player_instance.play(function () {
     clearInterval(countdown);
+    player.setCurrentPosition(0);
   })
 }
 
@@ -180,4 +186,14 @@ export function createDownload(filename,text) {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}
+
+export function createTestData() {
+  let song1 = [new MidiEvent(0, 1, 74, 3000, 100), new MidiEvent(4100, 1, 76, 1000, 100)];
+  let song2 = [new MidiEvent(0, 1, 74, 1000, 100), new MidiEvent(1100, 1, 76, 1000, 100)];
+  let song3 = [new MidiEvent(0, 1, 74, 1000, 100), new MidiEvent(1100, 1, 76, 1000, 100)];
+  createMidiFile(song1, "song1", "0");
+  createMidiFile(song2, "song2", "0");
+  createMidiFile(song3, "song3", "0");
+
 }

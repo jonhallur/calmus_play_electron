@@ -19,6 +19,7 @@
   "dependencies": {
     "axios": "^0.13.1",
     "bootstrap": "^3.3.7",
+    "jquery": "^3.1.1",
     "jumpsuit": "^0.7.5",
     "lodash": "^4.14.1",
     "midifile": "^1.0.4",

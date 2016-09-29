@@ -1,13 +1,50 @@
 @import 'leds.css'
 @import '../node_modules/react-notifications/lib/notifications.css'
 
-a .white-glyph {
-  color: lightgrey
+.white-glyph {
+  color: white;
+};
+
+.white-glyph:hover {
+  color: lightgreen;
 }
-a:active .white-glyph {
-  color: lightgrey
+.player-line{
+  display: block;
+  background-color: white;
+  color: black;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
 }
 
-a .white-glyph :hoover {
-  color: black
+.player-content{
+  z-index:9;
+  position:relative;
+  width: 100%
+}
+
+.active-progress {
+  display: block;
+  height: 100%;
+  width: 0;
+  position: absolute;
+  z-index: 0
+  top: 0;
+  left: 0;
+  background: lightblue;
+};
+
+.inactive-progress {
+  display: block;
+  height: 100%;
+  width: 0;
+  position: absolute;
+  z-index: 0
+  top: 0;
+  left: 0;
+  background: white;
+}
+
+.player-tools {
+  float: right;
 }
