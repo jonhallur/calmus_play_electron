@@ -8,6 +8,7 @@ import MIDIFile from 'midifile'
 import WebMidi from 'webmidi'
 import {NotificationManager} from 'react-notifications'
 import MidiEvent from '../pojos/midievent'
+import uuid from 'uuid'
 
 const MS_PER_MINUTE = 60;
 const DEFAULT_TEMPO = 120;
@@ -21,11 +22,12 @@ const player = State('player', {
     players: [],
     interval: 0,
     current_length: 0,
-    current_position: 0
+    current_position: 0,
+    current_id: ''
   },
 
   addFile: (state, payload) => ({
-    files: [payload, ...state.files]
+    files: [...state.files, payload]
   }),
 
   removeFile (state, payload) {
@@ -35,7 +37,7 @@ const player = State('player', {
 
   setCurrentLenght: (state, payload) => ({
     current_length: payload,
-    current_position: payload
+    current_position: payload-1
   }),
 
   tickCurrentPosition: (state, payload) => ({
@@ -47,15 +49,16 @@ const player = State('player', {
   }),
 
   addPlayer: (state, payload) => ({
-    players: [payload, ...state.players]
+    players: [...state.players, payload]
   }),
 
   setInterval: (state,payload) => ({
     interval: payload
   }),
 
-
-
+  setCurrentId: (state, payload) => ({
+    current_id: payload
+  })
 });
 
 export default player
@@ -130,12 +133,14 @@ export function createMidiFile(midiEvents, settings, out_id){
     binaryData = data;
 
   });
-  player.addFile({name: settings, data:binaryData, });
+  player.addFile({name: settings, data:binaryData, uuid: uuid()});
   let midiplayer = new MIDIPlayer({'output': WebMidi.getOutputById(out_id)._midiOutput});
   player.addPlayer(midiplayer);
 }
 
-export function playFromList(compositions, players, id, interval) {
+export function playFromList(compositions, players, index, interval) {
+  let id = players.length - 1 - index;
+
   let composition = compositions[id];
   let player_instance = players[id];
   if (player_instance === '')
@@ -148,28 +153,33 @@ export function playFromList(compositions, players, id, interval) {
   if(interval != 0) {
     clearInterval(interval);
   }
-  let {data, name} = composition;
+  let {data, name, uuid} = composition;
   let midiFile = new MIDIFile(data.buffer);
   player_instance.load(midiFile);
   let play_time = Math.round((player_instance.events.slice(-1)[0].playTime)/1000);
-  console.log("pl", player_instance.events);
-  console.log("Expected Playtime", play_time);
-  player.setCurrentLenght(play_time);
   let countdown = setInterval(function () {
     player.tickCurrentPosition()
   }, 1000);
+  player.setCurrentLenght(play_time);
   player.setInterval(countdown);
+  player.setCurrentId(uuid);
   player_instance.play(function () {
     clearInterval(countdown);
+    player.setInterval(0);
     player.setCurrentPosition(0);
+    player.setCurrentId('')
   })
 }
 
-export function stopPlayback(players, id, interval) {
+export function stopPlayback(players, index, interval) {
   for(let player_inst of players) {
     player_inst.stop();
   }
   clearInterval(interval);
+  player.setInterval(0);
+  player.setCurrentPosition(0);
+  player.setCurrentId('')
+
 }
 
 export function createDownload(filename,text) {
@@ -188,12 +198,12 @@ export function createDownload(filename,text) {
   document.body.removeChild(link);
 }
 
-export function createTestData() {
+export function createTestData(mult) {
   let song1 = [new MidiEvent(0, 1, 74, 3000, 100), new MidiEvent(4100, 1, 76, 1000, 100)];
   let song2 = [new MidiEvent(0, 1, 74, 1000, 100), new MidiEvent(1100, 1, 76, 1000, 100)];
   let song3 = [new MidiEvent(0, 1, 74, 1000, 100), new MidiEvent(1100, 1, 76, 1000, 100)];
-  createMidiFile(song1, "song1", "0");
-  createMidiFile(song2, "song2", "0");
-  createMidiFile(song3, "song3", "0");
+  createMidiFile(song1, "song"+mult, "0");
+  createMidiFile(song2, "song"+(mult+1), "0");
+  createMidiFile(song3, "song"+(mult+2), "0");
 
 }

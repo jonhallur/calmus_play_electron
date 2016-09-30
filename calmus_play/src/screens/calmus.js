@@ -33,13 +33,10 @@ export default Component({
     ui_state.setPolyphony('');
     ui_state.setScale('');
     getMidiPorts();
-    setTimeout(function() {
-      createTestData();
-    }, 3000);
   },
 
   getCompositionValues: function () {
-    let values = [
+    return [
       this.props.transposeValue,
       this.props.speedValue,
       this.props.sizeValue,
@@ -48,7 +45,6 @@ export default Component({
       this.props.polyphonyValue,
       this.props.scaleValue,
     ];
-    return values;
   },
 
   onComposeWithInput(event) {
@@ -110,10 +106,14 @@ export default Component({
   },
 
   render() {
-    var currentPos = 100 - (this.props.current_position / this.props.current_length) * 100;
+    let currentPos = 100 - (this.props.current_position / this.props.current_length) * 100;
+    let reverseList = [];
+    this.props.midiFiles.map(x => reverseList.push(x));
+    reverseList.reverse();
     return (
       <div>
         <div className="panel panel-default">
+          <div className="panel-heading">Settings</div>
           <div className="panel-body">
             <form className="form-horizontal">
               <div className="form-group">
@@ -209,25 +209,21 @@ export default Component({
           </div>
         </div>
       <div className="panel panel-default">
+        <div className="panel-heading">MIDI</div>
         <div className="panel-body">
           <MidiSelector />
-          <div className="form-group col-sm-4">
-            <div className="form-group col-sm-6">
-              <Led label="MIDI Ready" state={this.props.midiAvailable} />
-            </div>
-            <div className="form-group col-sm-6">
-              <Led label="Ready To Play" state={this.props.compositionReady} />
-            </div>
-          </div>
+          <MidiRecorder />
         </div>
       </div>
       <div className="panel panel-default">
+        <div className="panel-heading">MIDI Player</div>
         <div className="panel-body">
-          <ul className="list-group col-sm-6 midi-player">
-            {this.props.midiFiles.map((midiFile, index) => (
-              <li className="list-group-item" id={index} key={index}>
-                <div className="player-line">
-                  <div id={index} className="inactive-progress" style={{width: currentPos + "%"}} ></div>
+          <div className="col-sm-6">
+            <ul className="list-group midi-player">
+            {reverseList.map((midiFile, index) => (
+              <li className={this.props.playingId === midiFile.uuid ? 'list-group-item player-line' : 'list-group-item'} id={index} key={index}>
+                <div className="">
+                  <div id={index} className={this.props.playingId === midiFile.uuid ? 'progress' : ''} style={{width: currentPos + "%"}} ></div>
                   <div className="player-content">
                     {midiFile.name}
                     <span className="badge player-tools">
@@ -250,7 +246,7 @@ export default Component({
               </li>
             ))}
           </ul>
-          <MidiRecorder />
+          </div>
         </div>
       </div>
     </div>
@@ -282,5 +278,6 @@ export default Component({
   current_length: state.midi_player.current_length,
   current_position: state.midi_player.current_position,
   recordingReady: state.midi_recording.ready,
-  recordingsList: state.midi_recording.eventList
+  recordingsList: state.midi_recording.eventList,
+  playingId: state.midi_player.current_id
 }))

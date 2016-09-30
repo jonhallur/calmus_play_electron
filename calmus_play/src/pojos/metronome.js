@@ -51,7 +51,9 @@ function scheduleNote( beatNumber, time ) {
 
   // create an oscillator
   var osc = audioContext.createOscillator();
-  osc.connect( audioContext.destination );
+  var gainNode = audioContext.createGain();
+  osc.connect(gainNode);
+  gainNode.connect(audioContext.destination);
   if (beatNumber % 16 === 0)    // beat 0 == high pitch
     osc.frequency.value = 880.0;
   else if (beatNumber % 4 === 0 )    // quarter notes = medium pitch
@@ -59,6 +61,7 @@ function scheduleNote( beatNumber, time ) {
   else                        // other 16th notes = low pitch
     osc.frequency.value = 220.0;
 
+  gainNode.gain.value = 0.25;
   osc.start( time );
   osc.stop( time + noteLength );
 }
