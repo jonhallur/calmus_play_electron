@@ -6,15 +6,24 @@ import {NotificationContainer} from 'react-notifications'
 import Calmus from '../screens/calmus'
 import Login from '../screens/login'
 import LogInfo from '../screens/loginfo'
+import SettingsList from '../components/settingslist'
 
 export default Component({
   render() {
     if (this.props.user) {
       return (
-        <div className='container'>
+        <div className='container-fluid'>
           <NotificationContainer/>
           <LogInfo />
-          <Calmus />
+
+          <div className="row">
+            <div className="col-sm-3">
+              <SettingsList />
+            </div>
+            <div className="col-sm-9">
+              <Calmus />
+            </div>
+          </div>
         </div>
         )
     }
@@ -29,4 +38,4 @@ export default Component({
   }
 }, (state) => ({
   user: state.firebase.user
-}))
+}));

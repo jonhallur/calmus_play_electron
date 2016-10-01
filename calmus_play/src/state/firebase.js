@@ -20,7 +20,10 @@ const firestate = State('firebase', {
     initialized: false,
     showLogin: true,
     user: '',
-    userName: ''
+    userUid: '',
+    userName: '',
+    settingsName: '',
+    savedSettingsList: []
   },
 
   setInitialized: (state, payload) => ({
@@ -39,6 +42,18 @@ const firestate = State('firebase', {
     userName: payload,
   }),
 
+  setSettingsName: (state, payload) => ({
+    settingsName: payload
+  }),
+
+  setUserUid: (state, payload) => ({
+    userUid: payload
+  }),
+
+  setSavedSettingsList: (state, payload) => ({
+    savedSettingsList: payload
+  }),
+
 
 });
 
@@ -55,12 +70,32 @@ export function initializeFirebase() {
   app.auth().onAuthStateChanged(function(user) {
     if (user) {
       if (user != null) {
+        console.log(user);
         firestate.setUser(user);
         firestate.setUserName(user.email);
+        firestate.setUserUid(user.uid);
+
+        app.database().ref('settings/' + user.uid).on('value', function(snapshot){
+          let settingsList = [];
+          snapshot.forEach(function(childSnapShot) {
+            let key = childSnapShot.key;
+            settingsList.push({...childSnapShot.val(), uid: key})
+          });
+          firestate.setSavedSettingsList(settingsList);
+
+
+        }, function (error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          NotificationManager.error(errorMessage, "Get All", 5000);
+        })
+
+
       }
     } else {
       firestate.setUser('');
-      firestate.setUserName('')
+      firestate.setUserName('');
+      firestate.setUserUid('');
     }
   });
 }
@@ -70,7 +105,7 @@ export function loginUser(email, password) {
     // Handle Errors here.
     var errorCode = error.code;
     var errorMessage = error.message;
-    NotificationManager.error(errorMessage, errorCode, 3000);
+    NotificationManager.error(errorMessage, "Login User", 5000);
   });
 }
 
@@ -79,7 +114,7 @@ export function createUser(email, password) {
     // Handle Errors here.
     var errorCode = error.code;
     var errorMessage = error.message;
-    NotificationManager.error(errorMessage, errorCode, 3000);
+    NotificationManager.error(errorMessage, "Create User", 5000);
   });
 }
 
@@ -90,4 +125,20 @@ export function logOutUser() {
   }, function(error) {
     // An error happened.
   });
+}
+
+export function saveSettings(settingsObject, userUid) {
+  let {transpose, speed, type, color, interval, polyphony, scale} = settingsObject;
+  app.database().ref('settings/' + userUid).push(settingsObject)
+}
+
+export function deleteSettings(settings_id, userUid) {
+  let refstring = ['settings', userUid, settings_id].join('/');
+  app.database().ref(refstring).remove(function (error)  {
+    if(error) {
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      NotificationManager.error(errorMessage, "Delete Settings", 5000);
+    }
+  })
 }
