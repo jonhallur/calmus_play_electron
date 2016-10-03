@@ -6,7 +6,7 @@ import firebase from 'firebase'
 import {NotificationManager} from 'react-notifications'
 
 var firebaseIsInitialized = false;
-var app;
+var fbapp;
 var fbconfig =  {
   apiKey: "AIzaSyAfbMcx8RBUqigJxVF3w493D4uz4__UvsM",
   authDomain: "calmus-play-web.firebaseapp.com",
@@ -15,7 +15,7 @@ var fbconfig =  {
   messagingSenderId: "283309000835"
 };
 
-const firestate = State('firebase', {
+const firestate = State('firebaseState', {
   initial: {
     initialized: false,
     showLogin: true,
@@ -63,19 +63,19 @@ export function initializeFirebase() {
   if(firebaseIsInitialized) {
     return;
   }
-  app = firebase.initializeApp(fbconfig);
+  fbapp = firebase.initializeApp(fbconfig);
   firebaseIsInitialized = true;
   firestate.setInitialized(true);
 
-  app.auth().onAuthStateChanged(function(user) {
+  fbapp.auth().onAuthStateChanged(function(user) {
     if (user) {
       if (user != null) {
-        console.log(user);
+        //console.log(user);
         firestate.setUser(user);
         firestate.setUserName(user.email);
         firestate.setUserUid(user.uid);
 
-        app.database().ref('settings/' + user.uid).on('value', function(snapshot){
+        fbapp.database().ref('settings/' + user.uid).on('value', function(snapshot){
           let settingsList = [];
           snapshot.forEach(function(childSnapShot) {
             let key = childSnapShot.key;
@@ -101,7 +101,7 @@ export function initializeFirebase() {
 }
 
 export function loginUser(email, password) {
-  app.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+  fbapp.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
     // Handle Errors here.
     var errorCode = error.code;
     var errorMessage = error.message;
@@ -110,7 +110,7 @@ export function loginUser(email, password) {
 }
 
 export function createUser(email, password) {
-  app.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+  fbapp.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
     // Handle Errors here.
     var errorCode = error.code;
     var errorMessage = error.message;
@@ -119,7 +119,7 @@ export function createUser(email, password) {
 }
 
 export function logOutUser() {
-  app.auth().signOut().then(function() {
+  fbapp.auth().signOut().then(function() {
     // Sign-out successful.
     firestate.setUser('');
   }, function(error) {
@@ -129,12 +129,12 @@ export function logOutUser() {
 
 export function saveSettings(settingsObject, userUid) {
   let {transpose, speed, type, color, interval, polyphony, scale} = settingsObject;
-  app.database().ref('settings/' + userUid).push(settingsObject)
+  fbapp.database().ref('settings/' + userUid).push(settingsObject)
 }
 
 export function deleteSettings(settings_id, userUid) {
   let refstring = ['settings', userUid, settings_id].join('/');
-  app.database().ref(refstring).remove(function (error)  {
+  fbapp.database().ref(refstring).remove(function (error)  {
     if(error) {
       var errorCode = error.code;
       var errorMessage = error.message;

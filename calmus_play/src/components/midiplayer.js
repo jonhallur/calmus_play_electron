@@ -5,6 +5,10 @@ import {Component} from 'jumpsuit'
 import {playFromList, stopPlayback, createDownload} from '../state/player'
 
 export default Component({
+  componentDidMount() {
+    //console.log("midiplayer mounted");
+  },
+
   onPlayBadgeClick(event) {
     event.preventDefault();
     let id = event.target.id;
@@ -19,7 +23,8 @@ export default Component({
 
   onDownloadBadgeClick(event) {
     event.preventDefault();
-    let id = event.target.id;
+    //let id = event.target.id;
+    let id = this.props.players.length - 1 - event.target.id;
     let composition = this.props.midiFiles[id];
     createDownload(composition.name + ".mid", composition.data);
   },

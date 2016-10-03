@@ -7,15 +7,20 @@ import Calmus from '../screens/calmus'
 import Login from '../screens/login'
 import LogInfo from '../screens/loginfo'
 import SettingsList from '../components/settingslist'
+import {initializeFirebase} from '../state/firebase'
 
 export default Component({
+  componentDidMount() {
+    //console.log("entry mounted")
+    initializeFirebase();
+  },
+
   render() {
     if (this.props.user) {
       return (
         <div className='container-fluid'>
           <NotificationContainer/>
           <LogInfo />
-
           <div className="row">
             <div className="col-sm-3">
               <SettingsList />

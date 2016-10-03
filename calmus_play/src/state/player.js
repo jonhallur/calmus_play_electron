@@ -164,6 +164,7 @@ export function playFromList(compositions, players, index, interval) {
   player.setInterval(countdown);
   player.setCurrentId(uuid);
   player_instance.play(function () {
+    player_instance.stop();
     clearInterval(countdown);
     player.setInterval(0);
     player.setCurrentPosition(0);

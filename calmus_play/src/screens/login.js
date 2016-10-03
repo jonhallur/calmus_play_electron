@@ -1,10 +1,9 @@
 import { Component } from 'jumpsuit'
-import {NotificationContainer} from 'react-notifications';
-import firebase, {createUser, loginUser, initializeFirebase} from '../state/firebase'
+import firebase, {createUser, loginUser} from '../state/firebase'
 
 export default Component({
   componentDidMount() {
-    initializeFirebase();
+    //console.log("Login mounted");
   },
 
   navLoginClick (event) {

@@ -9,7 +9,9 @@ import {init} from '../pojos/metronome'
 
 export default Component({
   componentDidMount() {
+    //console.log("init metro");
     init();
+    //console.log("midi recorder mounted")
   },
 
   onStartRecButtonClick(event) {
@@ -22,7 +24,7 @@ export default Component({
       NotificationManager.error("No Midi input selected", "Midi Error", 3000);
       return
     }
-    startRecording(this.props.intervalTime, this.props.metronome, this.props.sounds, this.props.in_id);
+    startRecording(this.props.intervalTime, this.props.metronome, this.props.in_id);
   },
 
   onStopRecButtonClick(event) {
@@ -59,7 +61,6 @@ export default Component({
   metronome: state.midi_recording.metronome,
   isRecording: state.midi_recording.isRecording,
   intervalId: state.midi_recording.intervalId,
-  sounds: state.midi_recording.sounds,
   in_id: state.midi_state.in_id,
   inputHandle: state.midi_recording.inputHandle,
   noteOns: state.midi_recording.noteOns,

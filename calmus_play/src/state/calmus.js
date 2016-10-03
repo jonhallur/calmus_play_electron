@@ -58,7 +58,7 @@ const calmusState = State('calmus', {
 
 export default calmusState
 
-function createListsFromEventList(eventList) {
+export function createListsFromEventList(eventList) {
   let attack = [];
   let pitch = [];
   let duration = [];
@@ -73,7 +73,6 @@ function createListsFromEventList(eventList) {
   }
   attack.splice(0,1);
   attack.push(duration[duration.length-1]);
-
   attack[attack.length-1] = duration[duration.length-1];
   let attackString = '(' + attack.join(' ') + ')';
   let pitchString = '(' + pitch.join(' ') + ')';
@@ -84,7 +83,12 @@ function createListsFromEventList(eventList) {
 
 export function sendCalmusRequest(requestString, out_id, eventList) {
   NotificationManager.info("Connecting...", "Calmus", 2000);
-  var exampleSocket = new WebSocket("ws://89.160.139.113:9001");
+  var url = "ws://89.160.139.113:9001";
+  if (window.location.protocol === 'https:')
+  {
+    url = "wss://89.160.139.113:9001";
+  }
+  var exampleSocket = new WebSocket(url);
   calmusState.setWaitingForCalmus(true);
   calmusState.setCompositionReady(false);
 
@@ -95,7 +99,6 @@ export function sendCalmusRequest(requestString, out_id, eventList) {
     }
     else {
       let new_cell = createListsFromEventList(eventList);
-      console.log(new_cell);
       exampleSocket.send(requestString+new_cell);
       NotificationManager.info("Composing with Input...", "Calmus", 2000);
 
@@ -115,28 +118,6 @@ export function sendCalmusRequest(requestString, out_id, eventList) {
     NotificationManager.error('Connection to server failed', 'Calmus ERROR', 5000);
   };
 
-  /*
-  var xhr = new XMLHttpRequest();
-  xhr.addEventListener("load", eventListener);
-  var server = 'http://89.160.139.113:9001/';
-  xhr.open('GET', server + requestString, true);
-  //xhr.setRequestHeader("Content-Type", "text/plain");
-  xhr.withCredentials = false;
-  xhr.send();
-  */
-}
-
-function str2ab(str) {
-  var buf = new ArrayBuffer(str.length);
-  var bufView = new Uint8Array(buf);
-  for (var i=0, strLen=str.length; i < strLen; i++) {
-    bufView[i] = str.charCodeAt(i);
-  }
-  return buf;
-}
-
-function ab2str(buf) {
-  return String.fromCharCode.apply(null, new Uint8Array(buf));
 }
 
 function createEventList(attackList, channelList, pitchList, durationList, velocityList) {

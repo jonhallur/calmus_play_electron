@@ -24,6 +24,7 @@ function getRandomInt(min, max) {
 
 export default Component({
   componentDidMount() {
+    //console.log("Calmus did mount");
     ui_state.setTranspose(0);
     ui_state.setSpeed(0);
     ui_state.setSize('');
@@ -51,7 +52,6 @@ export default Component({
   },
 
   onComposeClick(event, useInput) {
-    console.log(useInput);
     event.preventDefault();
     if (this.props.midiOutId === '') {
       NotificationManager.error("Please select MIDI output", "MIDI Error", 3000);
@@ -180,7 +180,7 @@ export default Component({
             <div className="btn-toolbar">
               <button type="button" className="btn btn-default btn-primary" onClick={this.onComposeClick}>Compose</button>
               <button type="button" className="btn btn-default" onClick={this.onRandomClick}>Random</button>
-              <button type="button" className="btn btn-default" onClick={this.onComposeWithInput} disabled={!this.props.recordingReady}>ComposeInput</button>
+              <button type="button" className={this.props.recordingReady ? "btn btn-default" : "hidden"} onClick={this.onComposeWithInput}>ComposeInput</button>
               <SaveSettings />
             </div>
 

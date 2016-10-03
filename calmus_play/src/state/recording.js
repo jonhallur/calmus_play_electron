@@ -5,17 +5,15 @@ import {State} from 'jumpsuit'
 import WebMidi from 'webmidi'
 import MidiEvent from '../pojos/midievent'
 import * as clickTrack from '../pojos/metronome'
+import {createListsFromEventList} from './calmus'
 
 var recordingStartTime = 0;
-const upBeat = new Audio("pt_click1.wav");
-const downBeat = new Audio("pt_click2.wav");
 
 const recording = State('recording', {
   initial: {
     isRecording: false,
     metronome: true,
     intervalTime: 500,
-    sounds: [upBeat, downBeat, downBeat, downBeat],
     tempo: 120,
     inputHandle: '',
     noteOns: [],
@@ -69,7 +67,7 @@ const recording = State('recording', {
 
 export default recording
 
-export function startRecording(intervalTime, metronome, sounds, in_id) {
+export function startRecording(intervalTime, metronome, in_id) {
   recordingStartTime = WebMidi.time;
   clickTrack.play();
   let input = WebMidi.getInputById(in_id);
@@ -77,14 +75,14 @@ export function startRecording(intervalTime, metronome, sounds, in_id) {
     'noteon',
     'all',
     function(e) {
-      console.log("noteon", e.note, WebMidi.time - recordingStartTime);
+      //console.log("noteon", e.note, WebMidi.time - recordingStartTime);
       recording.addNoteOn({note: e.note.number, time: (WebMidi.time - recordingStartTime), velocity: e.velocity})
     });
   input.addListener(
     'noteoff',
     'all',
     function(e) {
-      console.log("noteoff", e.note, WebMidi.time - recordingStartTime);
+      //console.log("noteoff", e.note, WebMidi.time - recordingStartTime);
       recording.addNoteOff({note: e.note.number, time: (WebMidi.time - recordingStartTime)})
     }
   );
@@ -143,7 +141,6 @@ export function stopRecording(intervalId, inputHandle, noteOns, noteOffs, tickLe
 
   }
   if (eventList.length > 0) {
-    console.log(eventList);
     recording.setEventList(eventList);
     recording.setReady(true);
   }

@@ -57,7 +57,6 @@ export default midiState;
 
 export function getMidiPorts() {
   WebMidi.enable(function (err) {
-
     if (err) {
       console.log("WebMidi could not be enabled.", err);
     } else {

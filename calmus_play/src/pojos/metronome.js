@@ -1,3 +1,6 @@
+import work from 'webworkify'
+import worker from './worker'
+
 var audioContext = null;
 var isPlaying = false;      // Are we currently playing?
 var startTime;              // The start time of the entire sequence.
@@ -29,6 +32,7 @@ window.requestAnimFrame = (function(){
 })();
 
 function nextNote() {
+  //console.log("next note")
   // Advance current note and time by a 16th note...
   var secondsPerBeat = 60.0 / tempo;    // Notice this picks up the CURRENT
                                         // tempo value to calculate beat length.
@@ -41,6 +45,7 @@ function nextNote() {
 }
 
 function scheduleNote( beatNumber, time ) {
+  //console.log("schedule note")
   // push the note on the queue, even if we're not playing.
   notesInQueue.push( { note: beatNumber, time: time } );
 
@@ -67,6 +72,7 @@ function scheduleNote( beatNumber, time ) {
 }
 
 function scheduler() {
+  //console.log("Scheduler");
   // while there are notes that will need to play before the next interval,
   // schedule them and advance the pointer.
   while (nextNoteTime < audioContext.currentTime + scheduleAheadTime ) {
@@ -76,6 +82,7 @@ function scheduler() {
 }
 
 export function play() {
+  //console.log("metro play");
   isPlaying = !isPlaying;
 
   if (isPlaying) { // start playing
@@ -95,15 +102,11 @@ export function init(){
   // Http://cwilso.github.io/AudioContext-MonkeyPatch/AudioContextMonkeyPatch.js
   // TO WORK ON CURRENT CHROME!!  But this means our code can be properly
   // spec-compliant, and work on Chrome, Safari and Firefox.
-  console.log("Met init");
+  //console.log("Met init");
   //window.AudioContext = window.AudioContext || window.webkitAudioContext;
   audioContext = new AudioContext();
-
   // if we wanted to load audio files, etc., this is where we should do it.
-
-
-  timerWorker = new Worker("./metronomeworker.jsworker");
-
+  timerWorker = work(worker);
 
   timerWorker.onmessage = function(e) {
     if (e.data == "tick") {
@@ -114,4 +117,5 @@ export function init(){
       console.log("message: " + e.data);
   };
   timerWorker.postMessage({"interval":lookahead});
+
 }
