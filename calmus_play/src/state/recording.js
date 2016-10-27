@@ -113,10 +113,10 @@ export function stopRecording(intervalId, inputHandle, noteOns, noteOffs, tickLe
         duration = noteoff.time - noteon.time;
         eventList.push(
           new MidiEvent(
-            Math.round(noteon.time/tickLength),
+            noteon.time,
             1,
             noteon.note,
-            Math.round(duration/tickLength),
+            duration,
             Math.round(noteon.velocity*127)
           )
         );
@@ -130,10 +130,10 @@ export function stopRecording(intervalId, inputHandle, noteOns, noteOffs, tickLe
       duration = recEndTime - noteon.time;
       eventList.push(
         new MidiEvent(
-          Math.round(noteon.time/tickLength),
+          noteon.time,
           1,
           noteon.note,
-          Math.round(duration/tickLength),
+          duration,
           Math.round(noteon.velocity*127)
         )
       );

@@ -247,30 +247,4 @@
   content: "\f057";
 }
 
-.white-glyph {
-  color: #fff;
-}
-.white-glyph:hover {
-  color: #90ee90;
-}
-.player-line {
-  background-color: #f5f5f5;
-}
-.player-content {
-  z-index: 9;
-  position: relative;
-  width: 100%;
-}
-.progress {
-  display: block;
-  height: 100%;
-  width: 0;
-  position: absolute;
-  z-index: 0;
-  top: 0;
-  left: 0;
-  background: #add8e6;
-}
-.player-tools {
-  float: right;
-}
+.white-glyph{color:#fff}.white-glyph:hover{color:#90ee90}.player-line{background-color:#f5f5f5}.player-content{z-index:9;position:relative;width:100%}.progress{display:block;height:100%;width:0;position:absolute;z-index:0;top:0;left:0;background:#add8e6}.player-tools{float:right}

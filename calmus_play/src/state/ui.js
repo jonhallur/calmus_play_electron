@@ -3,13 +3,18 @@ import {State} from 'jumpsuit'
 const uiState = State('uistate', {
   initial: {
     transposeValue: 0,
-    speedValue: 0,
+    speedValue: 850,
+    rhythmComplexity: 0.5,
     sizeValue: {},
     colorValue: {},
     intervalValue: {},
     polyphonyValue: {},
+    addWood: true,
+    addBrass: false,
+    addStrings: false,
+    addPercussion: false,
     scaleValue: '',
-    size: ["Solo", "Duo", "Trio", "Quartet", "Quintet", "Sextet"],
+    size: ["Solo", "Duo", "Trio", "Quartet", "Quintet"],
     color: ["Blue", "Purple", "Red", "Orange", "Yellow", "Green"],
     interval: ["Two", "Three", "Four", "Five", "Six", "Seven"],
     polyphony: ["Individual", "Canon", "Horizontal/Vertical", "Homophonic"],
@@ -48,6 +53,11 @@ const uiState = State('uistate', {
       "Overtone"
     ]
   },
+
+  setKeyValue: (state, payload) => ({
+    [payload.key]: payload.value
+  }),
+
   setTranspose: (state, payload) => ({
     transposeValue: payload
   }),

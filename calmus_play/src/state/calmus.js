@@ -5,9 +5,9 @@ import {State} from 'jumpsuit'
 import {NotificationManager} from 'react-notifications';
 import {createMidiFile} from './player'
 import MidiEvent from '../pojos/midievent'
+import ui_state from './ui'
 
-
-
+var SERVER = '';
 
 const calmusState = State('calmus', {
   initial: {
@@ -23,6 +23,10 @@ const calmusState = State('calmus', {
     waitingForCalmus: false,
     requestString: ''
   },
+
+  setKeyValue: (state, payload) => ({
+    [payload.key]: payload.value
+  }),
 
   setAttackList: (state, payload) => ({
     attackList: payload
@@ -67,7 +71,7 @@ export function createListsFromEventList(eventList) {
   for (let midievent of eventList) {
     attack.push(midievent.attack - lastTime);
     pitch.push(midievent.pitch);
-    duration.push(midievent.duration-4);
+    duration.push(midievent.duration);
     velocity.push(midievent.velocity);
     lastTime = midievent.attack;
   }
@@ -78,10 +82,10 @@ export function createListsFromEventList(eventList) {
   let pitchString = '(' + pitch.join(' ') + ')';
   let durationString = '(' + duration.join(' ') + ')';
   let velocityString = '(' + velocity.join(' ') + ')';
-  return attackString+pitchString+durationString+velocityString+"     "
+  return attackString+pitchString+durationString+velocityString
 }
 
-export function sendCalmusRequest(requestString, out_id, eventList) {
+export function sendCalmusRequest(requestString, orchestrationString, out_id, eventList) {
   NotificationManager.info("Connecting...", "Calmus", 2000);
   var url = "ws://89.160.139.113:9001";
   if (window.location.protocol === 'https:')
@@ -94,21 +98,23 @@ export function sendCalmusRequest(requestString, out_id, eventList) {
 
   exampleSocket.onopen = function (stuff) {
     if (eventList === undefined) {
-      exampleSocket.send(requestString);
+      exampleSocket.send(requestString + " nil nil nil nil" + orchestrationString);
       NotificationManager.info("Composing...", "Calmus", 2000);
     }
     else {
       let new_cell = createListsFromEventList(eventList);
-      exampleSocket.send(requestString+new_cell);
-      NotificationManager.info("Composing with Input...", "Calmus", 2000);
+      exampleSocket.send(requestString + new_cell + orchestrationString);
+      NotificationManager.info("Composing wi  th Input...", "Calmus", 2000);
 
     }
     calmusState.setCalmusConnection(true)
   };
 
   exampleSocket.onmessage = function (message) {
+    console.log(message.data);
     handleCalmusData(message.data, requestString, out_id);
     NotificationManager.info("Composition Ready", "Calmus", 2000);
+    console.log(message.data);
     calmusState.setRequestString(requestString);
     calmusState.setCalmusConnection(false);
     calmusState.setWaitingForCalmus(false);
@@ -142,8 +148,15 @@ function handleCalmusData(calmusData, requestString, out_id) {
   let pitchList = lists[4].split(')')[0].split(' ');
   let durationList = lists[5].split(')')[0].split(' ');
   let velocityList = lists[6].split(')')[0].split(' ');
-  let adjective = lists[6].split(')')[1];
-
+  //let adjective = lists[6].split(')')[1];
+  let settingsList = lists[7].split(')')[0].split(' ');
+  let num_mel = settingsList[0];
+  let interval = settingsList[1];
+  let scale = settingsList[2];
+  ui_state.setSize(num_mel);
+  ui_state.setInteval(interval);
+  ui_state.setScale(scale);
+  let compositionText = lists[8].split(')')[0];
   let midiEventList = createEventList(attackList, channelList, pitchList, durationList, velocityList);
 
   calmusState.setAttackList(attackList);
@@ -153,7 +166,7 @@ function handleCalmusData(calmusData, requestString, out_id) {
   calmusState.setVelocityList(velocityList);
   calmusState.setMidiEventList(midiEventList);
   calmusState.setCompositionReady(true);
-  createMidiFile(midiEventList, adjective + " " + requestString, out_id)
+  createMidiFile(midiEventList, compositionText, out_id)
 }
 
 window.calmusstate = calmusState;

@@ -35,7 +35,7 @@ export default Component({
     this.props.midiFiles.map(x => reverseList.push(x));
     reverseList.reverse();
     return (
-      <div className="col-sm-6">
+      <div className="col-sm-10">
         <ul className="list-group midi-player">
           {reverseList.map((midiFile, index) => (
             <li className={this.props.playingId === midiFile.uuid ? 'list-group-item player-line' : 'list-group-item'} id={index} key={index}>

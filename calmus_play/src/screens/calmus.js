@@ -26,7 +26,7 @@ export default Component({
   componentDidMount() {
     //console.log("Calmus did mount");
     ui_state.setTranspose(0);
-    ui_state.setSpeed(0);
+    ui_state.setSpeed(850);
     ui_state.setSize('');
     ui_state.setColor('');
     ui_state.setInteval('');
@@ -53,6 +53,15 @@ export default Component({
 
   onComposeClick(event, useInput) {
     event.preventDefault();
+    let {addWood, addBrass, addStrings, addPercussion, rhythmComplexity} = this.props;
+    let orchestrationList = [
+      addWood ? 't': 'nil',
+      addBrass ? 't': 'nil',
+      addStrings ? 't': 'nil',
+      addPercussion ? 't': 'nil',
+      rhythmComplexity
+    ];
+    let orchString = ' ' + orchestrationList.join(' ');
     if (this.props.midiOutId === '') {
       NotificationManager.error("Please select MIDI output", "MIDI Error", 3000);
       return
@@ -65,18 +74,16 @@ export default Component({
     }
     let valueString = values.join(' ');
     if(useInput) {
-      sendCalmusRequest(valueString, this.props.midiOutId, this.props.recordingsList)
+      sendCalmusRequest(valueString, orchString, this.props.midiOutId, this.props.recordingsList)
     }
     else {
-      sendCalmusRequest(valueString, this.props.midiOutId);
+      sendCalmusRequest(valueString, orchString, this.props.midiOutId);
     }
   },
 
   onRandomClick(event) {
     event.preventDefault();
-    ui_state.setTranspose(getRandomInt(-20,20));
-    ui_state.setSpeed(getRandomInt(-100,1000));
-    ui_state.setSize(getRandomInt(1,6));
+    ui_state.setSize(getRandomInt(1,5));
     ui_state.setColor(getRandomInt(1,6));
     ui_state.setInteval(getRandomInt(2,7));
     ui_state.setPolyphony(getRandomInt(1,4));
@@ -129,6 +136,24 @@ export default Component({
                 </div>
               </div>
               <div className="form-group">
+                <label className="col-sm-1" htmlFor="speed">Rhythm Complexity</label>
+                <div className="col-sm-8">
+                  <input
+                    className=""
+                    id="rhythmComplexity"
+                    type="range"
+                    min="0.0"
+                    max="1.0"
+                    step="0.01"
+                    value={this.props.rhythmComplexity}
+                    onChange={e => ui_state.setKeyValue({key: 'rhythmComplexity', value: e.target.value })}
+                  />
+                </div>
+                <div className="col-sm-2">
+                  <input className="form-control" readOnly value={this.props.rhythmComplexity} />
+                </div>
+              </div>
+              <div className="form-group">
                 <Option
                   data={this.props.sizeOptions}
                   label="Type"
@@ -176,6 +201,34 @@ export default Component({
                   offset="0"
                 />
               </div>
+              <label className="checkbox-inline">
+                <input
+                  type="checkbox"
+                  checked={this.props.addWood}
+                  onChange={e => ui_state.setKeyValue({key: 'addWood', value: e.target.checked})}
+                />Add Wood to Strings
+              </label>&nbsp;&nbsp;&nbsp;
+              <label className="checkbox-inline">
+                <input
+                  type="checkbox"
+                  checked={this.props.addBrass}
+                  onChange={e => ui_state.setKeyValue({key: 'addBrass', value: e.target.checked})}
+                />Add Brass to Strings
+              </label>&nbsp;&nbsp;&nbsp;
+              <label className="checkbox-inline">
+                <input
+                  type="checkbox"
+                  checked={this.props.addStrings}
+                  onChange={e => ui_state.setKeyValue({key: 'addStrings', value: e.target.checked})}
+                />Add Strings to Wood
+              </label>&nbsp;&nbsp;&nbsp;
+              <label className="checkbox-inline">
+                <input
+                  type="checkbox"
+                  checked={this.props.addPercussion}
+                  onChange={e => ui_state.setKeyValue({key: 'addPercussion', value: e.target.checked})}
+                />Add Percussion to Orchestration
+              </label>
             </form>
             <div className="btn-toolbar">
               <button type="button" className="btn btn-default btn-primary" onClick={this.onComposeClick}>Compose</button>
@@ -211,11 +264,16 @@ export default Component({
   scaleOptions: state.ui_state.scale,
   transposeValue: state.ui_state.transposeValue,
   speedValue: state.ui_state.speedValue,
+  rhythmComplexity: state.ui_state.rhythmComplexity,
   sizeValue: state.ui_state.sizeValue,
   colorValue: state.ui_state.colorValue,
   intervalValue: state.ui_state.intervalValue,
   polyphonyValue: state.ui_state.polyphonyValue,
   scaleValue: state.ui_state.scaleValue,
+  addWood: state.ui_state.addWood,
+  addBrass: state.ui_state.addBrass,
+  addStrings: state.ui_state.addStrings,
+  addPercussion: state.ui_state.addPercussion,
   midiOutId: state.midi_state.out_id,
   tempo: state.midi_state.tempo,
   recordingsList: state.midi_recording.eventList,
