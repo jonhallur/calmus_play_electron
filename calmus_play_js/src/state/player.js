@@ -23,8 +23,13 @@ const player = State('player', {
     interval: 0,
     current_length: 0,
     current_position: 0,
-    current_id: ''
+    current_id: '',
+    translator: ''
   },
+
+  setKeyValue: (state, payload) => ({
+    [payload.key]: payload.value
+  }),
 
   addFile: (state, payload) => ({
     files: [...state.files, payload]
@@ -134,7 +139,10 @@ export function createMidiFile(midiEvents, settings, out_id){
 
   });
   player.addFile({name: settings, data:binaryData, uuid: uuid()});
-  let midiplayer = new MIDIPlayer({'output': WebMidi.getOutputById(out_id)._midiOutput});
+  //let midiplayer = new MIDIPlayer({'output': WebMidi.getOutputById(out_id)._midiOutput});
+  let translator = new midi_send_to_onmidimessage();
+  player.setKeyValue({key: 'translator', value: translator});
+  let midiplayer = new MIDIPlayer({'output': translator});
   player.addPlayer(midiplayer);
 }
 
@@ -207,4 +215,27 @@ export function createTestData(mult) {
   createMidiFile(song2, "song"+(mult+1), "0");
   createMidiFile(song3, "song"+(mult+2), "0");
 
+}
+
+class midi_send_to_onmidimessage {
+  send(paramList, endTimes, param2=null) {
+    if (this.onmidimessage !== undefined) {
+      let msg = {};
+      let status = paramList[0] >> 4;
+      msg.channel = paramList[0] & 15;
+      msg.key = paramList[1];
+      msg.velocity = paramList[2];
+      if (status === 8) {
+        msg.messageType = 'noteon'
+      }
+      else if (status === 9) {
+        msg.messageType = 'noteoff'
+      }
+      else {
+        return
+      }
+      this.onmidimessage(msg)
+
+    }
+  }
 }

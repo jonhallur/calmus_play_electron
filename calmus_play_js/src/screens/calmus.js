@@ -11,6 +11,7 @@ import {NotificationManager} from 'react-notifications'
 import MidiRecorder from '../components/midirecorder'
 import MidiPlayer from '../components/midiplayer'
 import SaveSettings from '../components/savesettings'
+import SoundFonts from '../components/soundfonts'
 
 export function eventValueHandler(func, event) {
   func(event.target.value);
@@ -244,6 +245,7 @@ export default Component({
         <div className="panel-body">
           <MidiSelector />
           <MidiRecorder />
+          <SoundFonts />
         </div>
       </div>
       <div className="panel panel-default">

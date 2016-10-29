@@ -30,6 +30,7 @@
     "react-notifications": "^1.3.0",
     "react-progressbar": "^1.3.4",
     "reactify": "^1.1.1",
+    "soundfont-player": "^0.10.5",
     "uuid": "^2.0.3",
     "webmidi": "^2.0.0-beta.1",
     "webworkify": "^1.4.0"
