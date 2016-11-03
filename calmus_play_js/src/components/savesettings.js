@@ -51,13 +51,13 @@ export default Component({
     )
   }
 }, (state) => ({
-  transposeValue: state.ui_state.transposeValue,
-  speedValue: state.ui_state.speedValue,
-  sizeValue: state.ui_state.sizeValue,
-  colorValue: state.ui_state.colorValue,
-  intervalValue: state.ui_state.intervalValue,
-  polyphonyValue: state.ui_state.polyphonyValue,
-  scaleValue: state.ui_state.scaleValue,
+  transposeValue: state.uistate.transposeValue,
+  speedValue: state.uistate.speedValue,
+  sizeValue: state.uistate.sizeValue,
+  colorValue: state.uistate.colorValue,
+  intervalValue: state.uistate.intervalValue,
+  polyphonyValue: state.uistate.polyphonyValue,
+  scaleValue: state.uistate.scaleValue,
   settingsName: state.firebase.settingsName,
   userUid: state.firebase.userUid
 }))

@@ -11,7 +11,7 @@ const MS_PER_MINUTE = 60000;
 const DEFAULT_TEMPO = 120;
 const TICKS_PER_BEAT = 96;
 
-const midiState = State('midi', {
+const midistate = State('midistate', {
   initial: {
     available: false,
     ready: false,
@@ -53,17 +53,17 @@ const midiState = State('midi', {
   })
 });
 
-export default midiState;
+export default midistate;
 
 export function getMidiPorts() {
   WebMidi.enable(function (err) {
     if (err) {
       console.log("WebMidi could not be enabled.", err);
     } else {
-      midiState.setAvailableIns(WebMidi.inputs);
-      midiState.setAvailableOuts(WebMidi.outputs);
-      midiState.setAvailable(true);
-      midiState.setInId('');
+      midistate.setAvailableIns(WebMidi.inputs);
+      midistate.setAvailableOuts(WebMidi.outputs);
+      midistate.setAvailable(true);
+      midistate.setInId('');
     }
 
   });
@@ -73,14 +73,14 @@ export function getMidiPorts() {
 export function setTempo(tempo) {
   let msPerBeat = MS_PER_MINUTE / tempo;
   let tickLength = msPerBeat / TICKS_PER_BEAT;
-  midiState.setTickLength(tickLength);
+  midistate.setTickLength(tickLength);
 }
 
 export function setMidiInput(id) {
-  midiState.setInId(id);
+  midistate.setInId(id);
 }
 export function setMidiOutput(id) {
-  midiState.setOutId(id);
+  midistate.setOutId(id);
 }
 
 function sendMidiOut(midiEventList, out_id, in_tempo) {

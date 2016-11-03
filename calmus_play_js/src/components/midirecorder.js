@@ -5,6 +5,8 @@ import {Component} from 'jumpsuit'
 import {NotificationManager} from 'react-notifications'
 import {startRecording, stopRecording, setupAudioContext} from '../state/recording'
 import {init} from '../pojos/metronome'
+import {sendCalmusRequest} from '../state/calmus'
+import recording from '../state/recording'
 
 
 export default Component({
@@ -24,7 +26,7 @@ export default Component({
       NotificationManager.error("No Midi input selected", "Midi Error", 3000);
       return
     }
-    startRecording(this.props.intervalTime, this.props.metronome, this.props.in_id);
+    startRecording(this.props.tempo, this.props.metronome, this.props.in_id);
   },
 
   onStopRecButtonClick(event) {
@@ -34,36 +36,77 @@ export default Component({
       return
     }
     stopRecording(
-      this.props.intervalId,
       this.props.inputHandle,
       this.props.noteOns,
       this.props.noteOffs,
-      this.props.tickLength
+      this.props.metronome
     );
+    sendCalmusRequest(true, true);
+
+  },
+
+  onRecomposeButtonClick(event) {
+    event.preventDefault();
+    if(!this.props.recordingReady) {
+      NotificationManager.warning("You have nothing to recompose", "Recorder", 2000);
+      return;
+    }
+    sendCalmusRequest(true, false);
   },
 
   render() {
     return (
       <div className="col-sm-6 btn-toolbar">
-          <button className="btn btn-default" onClick={this.onStartRecButtonClick}>
-            <span className="glyphicon glyphicon-registration-mark" aria-hidden="true"></span>
-            Start Recording
-          </button>
-          <button className="btn btn-default" onClick={this.onStopRecButtonClick}>
-            <span className="glyphicon glyphicon-stop" aria-hidden="true"></span>
-            Stop Recording
-          </button>
+        <button className="btn btn-default" onClick={this.onStartRecButtonClick}>
+          <span className="glyphicon glyphicon-registration-mark" aria-hidden="true"></span>
+          Start Recording
+        </button>
+        <button
+          className={this.props.isRecording ? "btn btn-default" : "hidden" }
+          onClick={this.onStopRecButtonClick}>
+          <span className="glyphicon glyphicon-stop" aria-hidden="true"></span>
+          Stop Recording
+        </button>
+        <button
+          className={this.props.recordingReady ? "btn btn-default" : "hidden"}
+          onClick={this.onRecomposeButtonClick}>Recompose
+        </button>
+          <label className="checkbox-inline">
+            <input
+              type="checkbox"
+              checked={this.props.metronome}
+              onChange={e => recording.setKeyValue({key: 'metronome', value: e.target.checked})}
+            />Metronome
+          </label>
+          <div className="col-sm-4">
+            <input
+              className=""
+              id="tempo"
+              type="range"
+              min="20"
+              max="250"
+              step="1"
+              value={this.props.tempo}
+              onChange={e => recording.setKeyValue({key:'tempo', value: e.target.value})}
+            />
+          </div>
+          <div className="col-sm-3">
+            <input className="form-control" readOnly value={this.props.tempo} />
+          </div>
       </div>
+
     )
   }
 }, (state) => ({
-  intervalTime: state.midi_recording.intervalTime,
-  metronome: state.midi_recording.metronome,
-  isRecording: state.midi_recording.isRecording,
-  intervalId: state.midi_recording.intervalId,
-  in_id: state.midi_state.in_id,
-  inputHandle: state.midi_recording.inputHandle,
-  noteOns: state.midi_recording.noteOns,
-  noteOffs: state.midi_recording.noteOffs,
-  tickLength: state.midi_state.tick_length
+  intervalTime: state.recording.intervalTime,
+  metronome: state.recording.metronome,
+  isRecording: state.recording.isRecording,
+  intervalId: state.recording.intervalId,
+  in_id: state.midistate.in_id,
+  inputHandle: state.recording.inputHandle,
+  noteOns: state.recording.noteOns,
+  noteOffs: state.recording.noteOffs,
+  tickLength: state.midistate.tick_length,
+  recordingReady: state.recording.ready,
+  tempo: state.recording.tempo
 }));

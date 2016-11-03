@@ -1,6 +1,6 @@
 import {State} from 'jumpsuit'
 
-const uiState = State('uistate', {
+const uistate = State('uistate', {
   initial: {
     transposeValue: 0,
     speedValue: 850,
@@ -9,10 +9,12 @@ const uiState = State('uistate', {
     colorValue: {},
     intervalValue: {},
     polyphonyValue: {},
-    addWood: true,
+    addWood: false,
     addBrass: false,
     addStrings: false,
     addPercussion: false,
+    melodyStrong: false,
+    harmonyStrong: false,
     scaleValue: '',
     size: ["Solo", "Duo", "Trio", "Quartet", "Quintet"],
     color: ["Blue", "Purple", "Red", "Orange", "Yellow", "Green"],
@@ -78,7 +80,7 @@ const uiState = State('uistate', {
   }),
   setScale: (state, payload) => ({
     scaleValue: payload
-  }),
+  })
 });
 
-export default uiState
+export default uistate;

@@ -11,7 +11,7 @@ export default Component({
 
   connectSoundFonts(event) {
     event.preventDefault();
-    loadSoundFonts(this.props.translator)
+    //loadSoundFonts(this.props.translator)
   },
 
   render () {
@@ -26,6 +26,6 @@ export default Component({
   }
 }, (state) => ({
   sf_ready: state.sound_fonts.ready,
-  in_id: state.midi_state.in_id,
+  in_id: state.midistate.in_id,
   translator: state.midi_player.translator,
 }))

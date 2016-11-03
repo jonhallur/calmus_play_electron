@@ -22,6 +22,10 @@ const recording = State('recording', {
     eventList: []
   },
 
+  setKeyValue: (state, payload) => ({
+    [payload.key]: payload.value
+  }),
+
   setIsRecording: (state, payload) => ({
     isRecording: payload
   }),
@@ -67,9 +71,11 @@ const recording = State('recording', {
 
 export default recording
 
-export function startRecording(intervalTime, metronome, in_id) {
+export function startRecording(tempo, metronome, in_id) {
   recordingStartTime = WebMidi.time;
-  clickTrack.play();
+  if(metronome) {
+    clickTrack.play(tempo);
+  }
   let input = WebMidi.getInputById(in_id);
   input.addListener(
     'noteon',
@@ -91,8 +97,10 @@ export function startRecording(intervalTime, metronome, in_id) {
   recording.setReady(false);
 }
 
-export function stopRecording(intervalId, inputHandle, noteOns, noteOffs, tickLength) {
-  clickTrack.play();
+export function stopRecording(inputHandle, noteOns, noteOffs, metronome) {
+  if(metronome) {
+    clickTrack.play(120);
+  }
   let recEndTime = WebMidi.time - recordingStartTime;
   inputHandle.removeListener('noteon');
   inputHandle.removeListener('noteoff');

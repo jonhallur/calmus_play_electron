@@ -139,10 +139,10 @@ export function createMidiFile(midiEvents, settings, out_id){
 
   });
   player.addFile({name: settings, data:binaryData, uuid: uuid()});
-  //let midiplayer = new MIDIPlayer({'output': WebMidi.getOutputById(out_id)._midiOutput});
-  let translator = new midi_send_to_onmidimessage();
-  player.setKeyValue({key: 'translator', value: translator});
-  let midiplayer = new MIDIPlayer({'output': translator});
+  let midiplayer = new MIDIPlayer({'output': WebMidi.getOutputById(out_id)._midiOutput});
+  //let translator = new midi_send_to_onmidimessage();
+  //player.setKeyValue({key: 'translator', value: translator});
+  //let midiplayer = new MIDIPlayer({'output': translator});
   player.addPlayer(midiplayer);
 }
 

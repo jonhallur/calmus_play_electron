@@ -1,18 +1,18 @@
 
-import ui_state from './ui'
+import uistate from './ui'
 import calmus_state from './calmus'
-import midi_state from './midi'
+import midistate from './midi'
 import midi_player from './player'
-import midi_recording from './recording'
+import recording from './recording'
 import firebase from './firebase'
 import sound_fonts from './soundfont'
 
 export default {
-  ui_state,
+  uistate,
   calmus_state,
-  midi_state,
+  midistate,
   midi_player,
-  midi_recording,
+  recording,
   firebase,
   sound_fonts
 }

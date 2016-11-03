@@ -24,7 +24,7 @@ export function loadSoundFonts(translator) {
   console.log(midiState.getState());
   let ac = new AudioContext();
   console.log(ac);
-  Soundfont.instrument(ac, 'acoustic_grand_piano', {from: 'http://gleitz.github.io/midi-js-soundfonts/MusyngKite/'}).then(
+  Soundfont.instrument(ac, 'contrabass', {from: 'http://gleitz.github.io/midi-js-soundfonts/MusyngKite/'}).then(
     function (piano) {
       //piano.play('C4').stop(ac.currentTime + 0.5);
       sound_fonts.setKeyValue({key: 'ready', value: true});

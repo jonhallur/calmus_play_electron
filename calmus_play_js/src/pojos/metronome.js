@@ -81,7 +81,8 @@ function scheduler() {
   }
 }
 
-export function play() {
+export function play(inTempo) {
+  tempo = inTempo;
   //console.log("metro play");
   isPlaying = !isPlaying;
 

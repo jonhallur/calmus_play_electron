@@ -45,10 +45,10 @@ export default Component({
       )
   }
 }, (state) => ({
-  midiAvailable: state.midi_state.available,
-  midiIns: state.midi_state.ins,
-  midiOuts: state.midi_state.outs,
-  midi_in_id: state.midi_state.in_id,
-  midi_out_id: state.midi_state.out_id,
+  midiAvailable: state.midistate.available,
+  midiIns: state.midistate.ins,
+  midiOuts: state.midistate.outs,
+  midi_in_id: state.midistate.in_id,
+  midi_out_id: state.midistate.out_id,
   midi_player: state.midi_player.player
 }))

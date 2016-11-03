@@ -23,6 +23,10 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function sendDataToCalmus(midiOutId, values) {
+  
+}
+
 export default Component({
   componentDidMount() {
     //console.log("Calmus did mount");
@@ -48,38 +52,27 @@ export default Component({
     ];
   },
 
-  onComposeWithInput(event) {
+  onRecomposeButtonClick(event) {
     this.onComposeClick(event, true)
   },
 
-  onComposeClick(event, useInput) {
+  onComposeClick(event, recompose=false) {
     event.preventDefault();
-    let {addWood, addBrass, addStrings, addPercussion, rhythmComplexity} = this.props;
-    let orchestrationList = [
-      addWood ? 't': 'nil',
-      addBrass ? 't': 'nil',
-      addStrings ? 't': 'nil',
-      addPercussion ? 't': 'nil',
-      rhythmComplexity
-    ];
-    let orchString = ' ' + orchestrationList.join(' ');
+    var inputValues = this.getCompositionValues();
     if (this.props.midiOutId === '') {
       NotificationManager.error("Please select MIDI output", "MIDI Error", 3000);
-      return
-    }
-    var values = this.getCompositionValues();
-    let has_empty_strings = values.map(x => x === '');
-    if (has_empty_strings.reduce((a,b) => (a || b))) {
-      NotificationManager.error("Set all composition parameters", "Some Parameters not set", 5000);
-      return
-    }
-    let valueString = values.join(' ');
-    if(useInput) {
-      sendCalmusRequest(valueString, orchString, this.props.midiOutId, this.props.recordingsList)
     }
     else {
-      sendCalmusRequest(valueString, orchString, this.props.midiOutId);
+      let has_empty_strings = inputValues.map(x => x === '');
+      if (has_empty_strings.reduce((a, b) => (a || b))) {
+        NotificationManager.error("Set all composition parameters", "Some Parameters not set", 5000);
+      }
+      else {
+        let useInput = false;
+        sendCalmusRequest(useInput, recompose)
+      }
     }
+
   },
 
   onRandomClick(event) {
@@ -230,11 +223,25 @@ export default Component({
                   onChange={e => ui_state.setKeyValue({key: 'addPercussion', value: e.target.checked})}
                 />Add Percussion to Orchestration
               </label>
+
+              <label className="checkbox-inline">
+                <input
+                  type="checkbox"
+                  checked={this.props.melodyStrong}
+                  onChange={e => ui_state.setKeyValue({key: 'melodyStrong', value: e.target.checked})}
+                />Melody Strong
+              </label>
+              <label className="checkbox-inline">
+                <input
+                  type="checkbox"
+                  checked={this.props.harmonyStrong}
+                  onChange={e => ui_state.setKeyValue({key: 'harmonyStrong', value: e.target.checked})}
+                />Harmony Strong
+              </label>
             </form>
             <div className="btn-toolbar">
               <button type="button" className="btn btn-default btn-primary" onClick={this.onComposeClick}>Compose</button>
               <button type="button" className="btn btn-default" onClick={this.onRandomClick}>Random</button>
-              <button type="button" className={this.props.recordingReady ? "btn btn-default" : "hidden"} onClick={this.onComposeWithInput}>ComposeInput</button>
               <SaveSettings />
             </div>
 
@@ -245,7 +252,6 @@ export default Component({
         <div className="panel-body">
           <MidiSelector />
           <MidiRecorder />
-          <SoundFonts />
         </div>
       </div>
       <div className="panel panel-default">
@@ -259,26 +265,28 @@ export default Component({
     )
   }
 }, (state) => ({
-  sizeOptions: state.ui_state.size,
-  colorOptions: state.ui_state.color,
-  intervalOptions: state.ui_state.interval,
-  polyphonyOptions: state.ui_state.polyphony,
-  scaleOptions: state.ui_state.scale,
-  transposeValue: state.ui_state.transposeValue,
-  speedValue: state.ui_state.speedValue,
-  rhythmComplexity: state.ui_state.rhythmComplexity,
-  sizeValue: state.ui_state.sizeValue,
-  colorValue: state.ui_state.colorValue,
-  intervalValue: state.ui_state.intervalValue,
-  polyphonyValue: state.ui_state.polyphonyValue,
-  scaleValue: state.ui_state.scaleValue,
-  addWood: state.ui_state.addWood,
-  addBrass: state.ui_state.addBrass,
-  addStrings: state.ui_state.addStrings,
-  addPercussion: state.ui_state.addPercussion,
-  midiOutId: state.midi_state.out_id,
-  tempo: state.midi_state.tempo,
-  recordingsList: state.midi_recording.eventList,
-  recordingReady: state.midi_recording.ready
+  sizeOptions: state.uistate.size,
+  colorOptions: state.uistate.color,
+  intervalOptions: state.uistate.interval,
+  polyphonyOptions: state.uistate.polyphony,
+  scaleOptions: state.uistate.scale,
+  transposeValue: state.uistate.transposeValue,
+  speedValue: state.uistate.speedValue,
+  rhythmComplexity: state.uistate.rhythmComplexity,
+  sizeValue: state.uistate.sizeValue,
+  colorValue: state.uistate.colorValue,
+  intervalValue: state.uistate.intervalValue,
+  polyphonyValue: state.uistate.polyphonyValue,
+  scaleValue: state.uistate.scaleValue,
+  addWood: state.uistate.addWood,
+  addBrass: state.uistate.addBrass,
+  addStrings: state.uistate.addStrings,
+  addPercussion: state.uistate.addPercussion,
+  melodyStrong: state.uistate.melodyStrong,
+  harmonyStrong: state.uistate.harmonyStrong,
+  midiOutId: state.midistate.out_id,
+  tempo: state.midistate.tempo,
+  recordingsList: state.recording.eventList,
+
 
 }))
