@@ -5,27 +5,32 @@ import {Component} from 'jumpsuit'
 import {loadSoundFonts} from '../state/soundfont'
 
 export default Component({
-  componentDidMount() {
-    //loadSoundFonts();
-  },
-
-  connectSoundFonts(event) {
-    event.preventDefault();
-    //loadSoundFonts(this.props.translator)
-  },
-
   render () {
+    let {instrumentNames} = this.props;
     return (
       <div>
-        {(this.props.in_id !== '') ?
-          <button
-            onClick={this.connectSoundFonts}
-          >Connect</button> : ''}
+        { instrumentNames.map((name, index) => (
+          <Led key={'led_state_' + index} name={name} index={index} />
+          )
+        )}
+
       </div>
     )
   }
 }, (state) => ({
-  sf_ready: state.sound_fonts.ready,
-  in_id: state.midistate.in_id,
-  translator: state.midi_player.translator,
+  instrumentNames: state.soundfonts.instrumentNames
 }))
+
+const Led = Component({
+  render() {
+    let {name, index, instrumentLedStates} = this.props;
+    return (
+      <div className="led-box">
+        <div className={instrumentLedStates[index]}></div>
+        <p>{name.slice(0,8)}</p>
+      </div>
+    )
+  }
+}, (state) => ({
+  instrumentLedStates: state.soundfonts.instrumentLedStates
+}));

@@ -12,6 +12,7 @@ import MidiRecorder from '../components/midirecorder'
 import MidiPlayer from '../components/midiplayer'
 import SaveSettings from '../components/savesettings'
 import SoundFonts from '../components/soundfonts'
+import {loadSoundFonts} from "../state/soundfont";
 
 export function eventValueHandler(func, event) {
   func(event.target.value);
@@ -38,6 +39,7 @@ export default Component({
     ui_state.setPolyphony('');
     ui_state.setScale('');
     getMidiPorts();
+    loadSoundFonts();
   },
 
   getCompositionValues: function () {
@@ -89,6 +91,12 @@ export default Component({
   render() {
     return (
       <div>
+        <div className="panel panel-default">
+          <div className="panel-heading">SoundFonts</div>
+          <div className="panel-body">
+            <SoundFonts/>
+          </div>
+        </div>
         <div className="panel panel-default">
           <div className="panel-heading">Settings</div>
           <div className="panel-body">
@@ -198,30 +206,30 @@ export default Component({
               <label className="checkbox-inline">
                 <input
                   type="checkbox"
+                  checked={this.props.addStrings}
+                  onChange={e => ui_state.setKeyValue({key: 'addStrings', value: e.target.checked})}
+                />String Section
+              </label>&nbsp;&nbsp;&nbsp;
+              <label className="checkbox-inline">
+                <input
+                  type="checkbox"
                   checked={this.props.addWood}
                   onChange={e => ui_state.setKeyValue({key: 'addWood', value: e.target.checked})}
-                />Add Wood to Strings
+                />Wood Section
               </label>&nbsp;&nbsp;&nbsp;
               <label className="checkbox-inline">
                 <input
                   type="checkbox"
                   checked={this.props.addBrass}
                   onChange={e => ui_state.setKeyValue({key: 'addBrass', value: e.target.checked})}
-                />Add Brass to Strings
-              </label>&nbsp;&nbsp;&nbsp;
-              <label className="checkbox-inline">
-                <input
-                  type="checkbox"
-                  checked={this.props.addStrings}
-                  onChange={e => ui_state.setKeyValue({key: 'addStrings', value: e.target.checked})}
-                />Add Strings to Wood
+                />Brass Section
               </label>&nbsp;&nbsp;&nbsp;
               <label className="checkbox-inline">
                 <input
                   type="checkbox"
                   checked={this.props.addPercussion}
                   onChange={e => ui_state.setKeyValue({key: 'addPercussion', value: e.target.checked})}
-                />Add Percussion to Orchestration
+                />Percussion Section
               </label>
 
               <label className="checkbox-inline">

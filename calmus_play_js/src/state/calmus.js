@@ -139,7 +139,7 @@ export function sendCalmusRequest(useInput, shouldRecompose) {
     NotificationManager.warning("Nothing was recorded", "Recorder", 3000);
     return;
   }
-  NotificationManager.info("Connecting...", "Calmus", 2000);
+  //NotificationManager.info("Connecting...", "Calmus", 2000);
   var url = "ws://89.160.139.113:9001";
   if (window.location.protocol === 'https:')
   {
@@ -159,18 +159,25 @@ export function sendCalmusRequest(useInput, shouldRecompose) {
       let new_cell = createListsFromEventList(eventList);
       exampleSocket.send(requestString + new_cell + orchestrationString);
       console.log(requestString, orchestrationString);
-      NotificationManager.info("Composing wi  th Input...", "Calmus", 2000);
+      NotificationManager.info("Composing with Input...", "Calmus", 2000);
 
     }
     calmusState.setCalmusConnection(true)
   };
 
   exampleSocket.onmessage = function (message) {
-    handleCalmusData(message.data, requestString, out_id);
-    NotificationManager.info("Composition Ready", "Calmus", 2000);
-    calmusState.setRequestString(requestString);
-    calmusState.setCalmusConnection(false);
-    calmusState.setWaitingForCalmus(false);
+    if (message.data[0] === '(') {
+      console.log("this is a composition");
+      handleCalmusData(message.data, requestString, out_id);
+      NotificationManager.info("Composition Ready", "Calmus", 2000);
+      calmusState.setRequestString(requestString);
+      calmusState.setCalmusConnection(false);
+      calmusState.setWaitingForCalmus(false);
+    }
+    else {
+      NotificationManager.success(message.data, "Calmus Says", 5000);
+    }
+
   };
 
   exampleSocket.onerror = function (error) {

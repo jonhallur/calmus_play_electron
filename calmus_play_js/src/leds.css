@@ -1,24 +1,14 @@
 .led-box {
-    height: 25px;
-    width: 100%;
-    margin: 10px 10px;
+    height: 30px;
+    width: 50px;
+    margin: 10px 0;
     float: left;
 }
 
-.led-label p {
+.led-box p {
     font-size: 12px;
-    margin-left: 0.2em;
-    vertical-align: middle;
+    text-align: center;
 }
-
-.led-label {
-    height: 25px;
-    float: left;
-    vertical-align: middle;
-}
-
-
-
 @-webkit-keyframes blinkRed {
     from { background-color: #F00; }
     50% { background-color: #A00; box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 0;}
@@ -75,7 +65,7 @@
 
 .led-green {
     float: left;
-    margin: 2px 5px;
+    margin: 2px 15px;
     width: 20px;
     height: 20px;
     background-color: #ABFF00;
@@ -85,7 +75,7 @@
 
 .led-blue {
     float: left;
-    margin: 2px 5px;
+    margin: 2px 15px;
     width: 20px;
     height: 20px;
     background-color: #24E0FF;
@@ -95,7 +85,7 @@
 
 .led-gray {
     float: left;
-    margin: 2px 5px;
+    margin: 2px 15px;
     width: 20px;
     height: 20px;
     background-color: #ABABAB;
@@ -105,7 +95,7 @@
 
 .led-red {
     float: left;
-    margin: 2px 5px;
+    margin: 2px 15px;
     width: 20px;
     height: 20px;
     background-color: #F00;
@@ -120,7 +110,7 @@
 
 .led-yellow {
     float: left;
-    margin: 2px 5px;
+    margin: 2px 15px;
     width: 20px;
     height: 20px;
     background-color: #FF0;

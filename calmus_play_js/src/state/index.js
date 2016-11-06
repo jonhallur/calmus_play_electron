@@ -5,7 +5,7 @@ import midistate from './midi'
 import midi_player from './player'
 import recording from './recording'
 import firebase from './firebase'
-import sound_fonts from './soundfont'
+import soundfonts from './soundfont'
 
 export default {
   uistate,
@@ -14,5 +14,5 @@ export default {
   midi_player,
   recording,
   firebase,
-  sound_fonts
+  soundfonts
 }

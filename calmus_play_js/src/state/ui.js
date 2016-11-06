@@ -11,7 +11,7 @@ const uistate = State('uistate', {
     polyphonyValue: {},
     addWood: false,
     addBrass: false,
-    addStrings: false,
+    addStrings: true,
     addPercussion: false,
     melodyStrong: false,
     harmonyStrong: false,

@@ -9,6 +9,7 @@ import WebMidi from 'webmidi'
 import {NotificationManager} from 'react-notifications'
 import MidiEvent from '../pojos/midievent'
 import uuid from 'uuid'
+import soundfonts from './soundfont'
 
 const MS_PER_MINUTE = 60;
 const DEFAULT_TEMPO = 120;
@@ -139,10 +140,11 @@ export function createMidiFile(midiEvents, settings, out_id){
 
   });
   player.addFile({name: settings, data:binaryData, uuid: uuid()});
-  let midiplayer = new MIDIPlayer({'output': WebMidi.getOutputById(out_id)._midiOutput});
+  let {translator} = soundfonts.getState();
+  //let midiplayer = new MIDIPlayer({'output': WebMidi.getOutputById(out_id)._midiOutput});
   //let translator = new midi_send_to_onmidimessage();
   //player.setKeyValue({key: 'translator', value: translator});
-  //let midiplayer = new MIDIPlayer({'output': translator});
+  let midiplayer = new MIDIPlayer({'output': translator});
   player.addPlayer(midiplayer);
 }
 
@@ -217,25 +219,3 @@ export function createTestData(mult) {
 
 }
 
-class midi_send_to_onmidimessage {
-  send(paramList, endTimes, param2=null) {
-    if (this.onmidimessage !== undefined) {
-      let msg = {};
-      let status = paramList[0] >> 4;
-      msg.channel = paramList[0] & 15;
-      msg.key = paramList[1];
-      msg.velocity = paramList[2];
-      if (status === 8) {
-        msg.messageType = 'noteon'
-      }
-      else if (status === 9) {
-        msg.messageType = 'noteoff'
-      }
-      else {
-        return
-      }
-      this.onmidimessage(msg)
-
-    }
-  }
-}
