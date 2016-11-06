@@ -24,10 +24,6 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function sendDataToCalmus(midiOutId, values) {
-  
-}
-
 export default Component({
   componentDidMount() {
     //console.log("Calmus did mount");
@@ -42,7 +38,7 @@ export default Component({
     loadSoundFonts();
   },
 
-  getCompositionValues: function () {
+  getCompositionValues () {
     return [
       this.props.transposeValue,
       this.props.speedValue,
@@ -61,18 +57,13 @@ export default Component({
   onComposeClick(event, recompose=false) {
     event.preventDefault();
     var inputValues = this.getCompositionValues();
-    if (this.props.midiOutId === '') {
-      NotificationManager.error("Please select MIDI output", "MIDI Error", 3000);
+    let has_empty_strings = inputValues.map(x => x === '');
+    if (has_empty_strings.reduce((a, b) => (a || b))) {
+      NotificationManager.error("Set all composition parameters", "Some Parameters not set", 5000);
     }
     else {
-      let has_empty_strings = inputValues.map(x => x === '');
-      if (has_empty_strings.reduce((a, b) => (a || b))) {
-        NotificationManager.error("Set all composition parameters", "Some Parameters not set", 5000);
-      }
-      else {
-        let useInput = false;
-        sendCalmusRequest(useInput, recompose)
-      }
+      let useInput = false;
+      sendCalmusRequest(useInput, recompose)
     }
 
   },

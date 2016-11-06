@@ -5,6 +5,7 @@ import {State} from 'jumpsuit'
 import WebMidi from 'webmidi'
 import MidiEvent from '../pojos/midievent'
 import * as clickTrack from '../pojos/metronome'
+import soundfonts from './soundfont'
 import {createListsFromEventList} from './calmus'
 
 var recordingStartTime = 0;
@@ -72,6 +73,7 @@ const recording = State('recording', {
 export default recording
 
 export function startRecording(tempo, metronome, in_id) {
+  let {translator} = soundfonts.getState();
   recordingStartTime = WebMidi.time;
   if(metronome) {
     clickTrack.play(tempo);
@@ -82,7 +84,8 @@ export function startRecording(tempo, metronome, in_id) {
     'all',
     function(e) {
       //console.log("noteon", e.note, WebMidi.time - recordingStartTime);
-      recording.addNoteOn({note: e.note.number, time: (WebMidi.time - recordingStartTime), velocity: e.velocity})
+      recording.addNoteOn({note: e.note.number, time: (WebMidi.time - recordingStartTime), velocity: e.velocity});
+      translator.send(e.data);
     });
   input.addListener(
     'noteoff',
@@ -90,6 +93,7 @@ export function startRecording(tempo, metronome, in_id) {
     function(e) {
       //console.log("noteoff", e.note, WebMidi.time - recordingStartTime);
       recording.addNoteOff({note: e.note.number, time: (WebMidi.time - recordingStartTime)})
+      translator.send(e.data);
     }
   );
   recording.setInputHandle(input);

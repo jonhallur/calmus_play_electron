@@ -3,7 +3,10 @@
  */
 import {State} from 'jumpsuit'
 import Soundfont from 'soundfont-player'
-import _ from 'lodash'
+import midistate from './midi'
+import WebMidi from 'webmidi'
+
+var selected_midi_output;
 
 class MIDI2SFTranslator {
   constructor() {
@@ -12,6 +15,16 @@ class MIDI2SFTranslator {
     }
   }
   send(paramList) {
+    if (selected_midi_output === undefined) {
+      let {out_id} = midistate.getState();
+      if (out_id !== ''){
+        selected_midi_output = WebMidi.getOutputById(out_id)._midiOutput;
+        selected_midi_output.send(paramList);
+      }
+    }
+    else {
+      selected_midi_output.send(paramList)
+    }
     let msg = {};
     let status = paramList[0] >> 4;
     msg.channel = paramList[0] & 15;
@@ -30,7 +43,6 @@ class MIDI2SFTranslator {
         return
       }
       this[msg.channel].onmidimessage(msg);
-      console.log("sending",msg);
     }
   }
 }
@@ -47,9 +59,6 @@ var led_states = {
 for(let i=0; i< 16; i++) {
   led_states[i] = 'led-gray'
 }
-
-
-
 
 const soundfonts = State('soundfonts',{
   initial: {
