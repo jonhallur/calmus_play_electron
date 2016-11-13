@@ -141,9 +141,6 @@ export function createMidiFile(midiEvents, settings, out_id){
   });
   player.addFile({name: settings, data:binaryData, uuid: uuid()});
   let {translator} = soundfonts.getState();
-  //let midiplayer = new MIDIPlayer({'output': WebMidi.getOutputById(out_id)._midiOutput});
-  //let translator = new midi_send_to_onmidimessage();
-  //player.setKeyValue({key: 'translator', value: translator});
   let midiplayer = new MIDIPlayer({'output': translator});
   player.addPlayer(midiplayer);
 }
@@ -207,15 +204,5 @@ export function createDownload(filename,text) {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-}
-
-export function createTestData(mult) {
-  let song1 = [new MidiEvent(0, 1, 74, 3000, 100), new MidiEvent(4100, 1, 76, 1000, 100)];
-  let song2 = [new MidiEvent(0, 1, 74, 1000, 100), new MidiEvent(1100, 1, 76, 1000, 100)];
-  let song3 = [new MidiEvent(0, 1, 74, 1000, 100), new MidiEvent(1100, 1, 76, 1000, 100)];
-  createMidiFile(song1, "song"+mult, "0");
-  createMidiFile(song2, "song"+(mult+1), "0");
-  createMidiFile(song3, "song"+(mult+2), "0");
-
 }
 

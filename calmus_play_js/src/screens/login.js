@@ -1,8 +1,10 @@
 import { Component } from 'jumpsuit'
 import firebase, {createUser, loginUser} from '../state/firebase'
+import uistate from '../state/ui'
 
 export default Component({
   componentDidMount() {
+    uistate.debugPrint("login mounted")
     //console.log("Login mounted");
   },
 

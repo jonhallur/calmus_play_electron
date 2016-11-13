@@ -11,7 +11,7 @@ export default Component({
         <label htmlFor={this.props.id} className="col-sm-3 control-label">{this.props.label}</label>
         <div className="col-sm-9">
           <select className="form-control" id={this.props.id} value={this.props.value} onChange={this.props.eventhandler} >
-            <option disabled value>{this.props.default_text}</option>
+            <option disabled value="">{this.props.default_text}</option>
             {this.props.data.map((option, index) =>
               <Option key={index} id={Number(index)+Number(offset)} name={option}/>
             )}

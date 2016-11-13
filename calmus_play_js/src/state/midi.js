@@ -5,6 +5,7 @@ import {State} from 'jumpsuit'
 import WebMidi from 'webmidi';
 import {NotificationManager} from 'react-notifications'
 import {createMidiFile, onOutputModified} from './player'
+import features from './features'
 
 
 const MS_PER_MINUTE = 60000;
@@ -59,11 +60,14 @@ export function getMidiPorts() {
   WebMidi.enable(function (err) {
     if (err) {
       console.log("WebMidi could not be enabled.", err);
+      features.setKeyValue({key:'midi', value: false});
     } else {
       midistate.setAvailableIns(WebMidi.inputs);
       midistate.setAvailableOuts(WebMidi.outputs);
       midistate.setAvailable(true);
       midistate.setInId('');
+      features.setKeyValue({key:'midi', value: true})
+
     }
 
   });

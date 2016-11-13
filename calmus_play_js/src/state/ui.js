@@ -3,12 +3,12 @@ import {State} from 'jumpsuit'
 const uistate = State('uistate', {
   initial: {
     transposeValue: 0,
-    speedValue: 850,
+    speedValue: 750,
     rhythmComplexity: 0.5,
-    sizeValue: {},
-    colorValue: {},
-    intervalValue: {},
-    polyphonyValue: {},
+    sizeValue: '',
+    colorValue: '',
+    intervalValue: '',
+    polyphonyValue: '',
     addWood: false,
     addBrass: false,
     addStrings: true,
@@ -53,7 +53,8 @@ const uistate = State('uistate', {
       "Prometheus-Neapolitian",
       "Whole-tone",
       "Overtone"
-    ]
+    ],
+    debugOutput: ''
   },
 
   setKeyValue: (state, payload) => ({
@@ -80,6 +81,14 @@ const uistate = State('uistate', {
   }),
   setScale: (state, payload) => ({
     scaleValue: payload
+  }),
+
+  debugOut: (state, payload) => ({
+    debugOutput: state.debugOutput + payload
+  }),
+
+  debugPrint: (state, payload) => ({
+    debugOutput: state.debugOutput + payload + '\n'
   })
 });
 

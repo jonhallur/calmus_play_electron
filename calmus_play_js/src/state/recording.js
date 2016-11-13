@@ -6,7 +6,6 @@ import WebMidi from 'webmidi'
 import MidiEvent from '../pojos/midievent'
 import * as clickTrack from '../pojos/metronome'
 import soundfonts from './soundfont'
-import {createListsFromEventList} from './calmus'
 
 var recordingStartTime = 0;
 

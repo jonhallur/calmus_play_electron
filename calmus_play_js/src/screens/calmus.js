@@ -13,6 +13,7 @@ import MidiPlayer from '../components/midiplayer'
 import SaveSettings from '../components/savesettings'
 import SoundFonts from '../components/soundfonts'
 import {loadSoundFonts} from "../state/soundfont";
+import features from '../state/features'
 
 export function eventValueHandler(func, event) {
   func(event.target.value);
@@ -28,26 +29,18 @@ export default Component({
   componentDidMount() {
     //console.log("Calmus did mount");
     ui_state.setTranspose(0);
-    ui_state.setSpeed(850);
+    ui_state.setSpeed(750);
     ui_state.setSize('');
     ui_state.setColor('');
     ui_state.setInteval('');
     ui_state.setPolyphony('');
     ui_state.setScale('');
+    ui_state.debugPrint("Calmus has mounted");
     getMidiPorts();
+    ui_state.debugPrint("MidiPorts");
     loadSoundFonts();
-  },
+    ui_state.debugPrint("Soundfonts");
 
-  getCompositionValues () {
-    return [
-      this.props.transposeValue,
-      this.props.speedValue,
-      this.props.sizeValue,
-      this.props.colorValue,
-      this.props.intervalValue,
-      this.props.polyphonyValue,
-      this.props.scaleValue,
-    ];
   },
 
   onRecomposeButtonClick(event) {
@@ -56,16 +49,8 @@ export default Component({
 
   onComposeClick(event, recompose=false) {
     event.preventDefault();
-    var inputValues = this.getCompositionValues();
-    let has_empty_strings = inputValues.map(x => x === '');
-    if (has_empty_strings.reduce((a, b) => (a || b))) {
-      NotificationManager.error("Set all composition parameters", "Some Parameters not set", 5000);
-    }
-    else {
-      let useInput = false;
-      sendCalmusRequest(useInput, recompose)
-    }
-
+    let useInput = false;
+    sendCalmusRequest(useInput, recompose)
   },
 
   onRandomClick(event) {
@@ -82,12 +67,7 @@ export default Component({
   render() {
     return (
       <div>
-        <div className="panel panel-default">
-          <div className="panel-heading">SoundFonts</div>
-          <div className="panel-body">
-            <SoundFonts/>
-          </div>
-        </div>
+        <SoundFonts/>
         <div className="panel panel-default">
           <div className="panel-heading">Settings</div>
           <div className="panel-body">
@@ -246,13 +226,7 @@ export default Component({
 
           </div>
         </div>
-      <div className="panel panel-default">
-        <div className="panel-heading">MIDI</div>
-        <div className="panel-body">
-          <MidiSelector />
-          <MidiRecorder />
-        </div>
-      </div>
+      <MidiPanel show={this.props.showMidiPanel} />
       <div className="panel panel-default">
         <div className="panel-heading">MIDI Player</div>
         <div className="panel-body">
@@ -286,6 +260,18 @@ export default Component({
   midiOutId: state.midistate.out_id,
   tempo: state.midistate.tempo,
   recordingsList: state.recording.eventList,
+  debugOutput: state.uistate.debugOutput,
+  showMidiPanel: state.features.midi,
 
 
 }))
+
+const MidiPanel = (props) => (
+  <div className={props.show ? "panel panel-default" : "hidden"}>
+    <div className="panel-heading">MIDI</div>
+    <div className="panel-body">
+      <MidiSelector />
+      <MidiRecorder />
+    </div>
+  </div>
+);

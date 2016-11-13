@@ -5,6 +5,10 @@ import {State} from 'jumpsuit'
 import Soundfont from 'soundfont-player'
 import midistate from './midi'
 import WebMidi from 'webmidi'
+import audio_context from 'audio-context'
+import features from './features'
+import uistate from './ui'
+//import '../pojos/audiocontextmonkeypatch'
 
 var selected_midi_output;
 
@@ -31,7 +35,7 @@ class MIDI2SFTranslator {
     msg.key = paramList[1];
     msg.velocity = paramList[2];
     if (this[msg.channel].onmidimessage !== undefined) {
-
+      console.log(msg);
       if (status === 8) {
         msg.messageType = 'noteoff'
       }
@@ -50,7 +54,7 @@ class MIDI2SFTranslator {
 var filenames = [
   'flute', 'oboe', 'clarinet', 'bassoon',
   'french_horn', 'trumpet', 'trombone', 'tuba',
-  'orchestral_harp', 'marimba', 'timpani',
+  'orchestral_harp', 'acoustic_grand_piano', 'timpani',
   'violin', 'violin', 'viola', 'cello', 'contrabass',
 ];
 //var led_states = Array.apply(null, {length: 16}).map(() => 'led-gray');
@@ -66,7 +70,9 @@ const soundfonts = State('soundfonts',{
     instruments: [],
     instrumentLedStates: led_states,
     instrumentNames: filenames,
-    translator: new MIDI2SFTranslator()
+    translator: new MIDI2SFTranslator(),
+    loadingPercentage: 0.0,
+    loadingText: 'Loading...'
   },
 
   setKeyValue: (state, payload) => ({
@@ -75,27 +81,50 @@ const soundfonts = State('soundfonts',{
 
   setInstrumentState: (state, payload) => ({
     instrumentLedStates: {...state.instrumentLedStates, [payload.key]: payload.value }
+  }),
+
+  addLoadingPercentage: (state, payload) => ({
+    loadingPercentage: state.loadingPercentage + payload
   })
 });
 
-export default soundfonts;
-
 export function loadSoundFonts() {
-  let ac = new AudioContext();
+  //let ac = new AudioContext();
+  let ac = audio_context;
   let {instrumentNames} = soundfonts.getState();
-  for (let index = 0; index < 16; index++) {
-    soundfonts.setInstrumentState({key: index, value: 'led-blue'});
-    loadInstrument(index, instrumentNames[index], ac);
+  let {ios} = features.getState();
+  if (ios) {
+    let channels = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+    loadInstrument(channels, instrumentNames[9], ac, 100);
+  }
+  else {
+    for (let index = 0; index < 16; index++) {
+      let fraction = 100.0 / 16.0;
+      loadInstrument([index], instrumentNames[index], ac, fraction);
+    }
   }
 }
 
-function loadInstrument(channel, instrument_name, audio_context) {
-  Soundfont.instrument(audio_context, instrument_name, {from: 'http://gleitz.github.io/midi-js-soundfonts/MusyngKite/', release: 2, loop: true}).then(
+export default soundfonts;
+
+function loadInstrument(channels, instrument_name, aud_cxt, percentage) {
+  Soundfont.instrument(aud_cxt, instrument_name, {from: 'http://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/', release: 3, format: 'mp3'}).then(
     function (instr) {
       let {translator} = soundfonts.getState();
-      instr.listenToMidi(translator[channel], {channel: channel});
-      soundfonts.setInstrumentState({key: channel, value: 'led-green'});
-
+      for(let index in channels) {
+        let channel = channels[index];
+        instr.listenToMidi(translator[channel], {channel: channel});
+        uistate.debugPrint("connected " + channel + " to " + instrument_name)
+      }
+      let loadingString = instrument_name.charAt(0).toUpperCase() + instrument_name.substr(1);
+      loadingString = loadingString.replace(/_/g, ' ');
+      loadingString = loadingString + " done";
+      soundfonts.setKeyValue({key: 'loadingText', value: loadingString});
+      soundfonts.addLoadingPercentage(percentage);
+      let {loadingPercentage} = soundfonts.getState();
+      if (loadingPercentage === 100) {
+        soundfonts.setKeyValue({key: "ready", value: true})
+      }
     }
   )
 }

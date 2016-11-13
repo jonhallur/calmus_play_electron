@@ -2,23 +2,40 @@
  * Created by jonh on 28.10.2016.
  */
 import {Component} from 'jumpsuit'
-import {loadSoundFonts} from '../state/soundfont'
+import Modal from 'react-modal'
+import soundfonts from '../state/soundfont'
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
 
 export default Component({
   render () {
     let {instrumentNames} = this.props;
     return (
       <div>
-        { instrumentNames.map((name, index) => (
-          <Led key={'led_state_' + index} name={name} index={index} />
-          )
-        )}
+        <Modal
+          isOpen={!this.props.ready}
+          style={customStyles} >
 
+          <h2 ref="subtitle">Please wait while sounds are loading</h2>
+            <p>{this.props.loadingPercentage}% - {this.props.loadingText}</p>
+        </Modal>
       </div>
     )
   }
 }, (state) => ({
-  instrumentNames: state.soundfonts.instrumentNames
+  instrumentNames: state.soundfonts.instrumentNames,
+  loadingPercentage: state.soundfonts.loadingPercentage,
+  loadingText: state.soundfonts.loadingText,
+  ready: state.soundfonts.ready,
 }))
 
 const Led = Component({
@@ -32,5 +49,6 @@ const Led = Component({
     )
   }
 }, (state) => ({
-  instrumentLedStates: state.soundfonts.instrumentLedStates
+  instrumentLedStates: state.soundfonts.instrumentLedStates,
+
 }));

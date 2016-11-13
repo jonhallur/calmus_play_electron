@@ -87,25 +87,14 @@ export function createListsFromEventList(eventList) {
   return attackString+pitchString+durationString+velocityString
 }
 
-function createRequestString() {
+function getPartsList() {
   let {
-    transposeValue,
-    speedValue,
-    sizeValue,
-    colorValue,
-    intervalValue,
-    polyphonyValue,
-    scaleValue,
+    addWood,
+    addBrass,
+    addStrings,
+    addPercussion,
   } = uistate.getState();
-  return [
-    transposeValue,
-    speedValue,
-    Number(sizeValue),
-    Number(colorValue),
-    Number(intervalValue),
-    Number(polyphonyValue),
-    Number(scaleValue),
-  ].join(' ')
+  return [addWood, addBrass, addStrings, addPercussion];
 }
 
 function createOrchestrationString(shouldRecompose) {
@@ -130,16 +119,46 @@ function createOrchestrationString(shouldRecompose) {
   ].join(' ');
 }
 
+function getCompositionSettingsList() {
+  let {
+    transposeValue,
+    speedValue,
+    sizeValue,
+    colorValue,
+    intervalValue,
+    polyphonyValue,
+    scaleValue,
+  } = uistate.getState();
+  return [
+    transposeValue,
+    speedValue,
+    sizeValue,
+    colorValue,
+    intervalValue,
+    polyphonyValue,
+    scaleValue,
+  ];
+}
+
 export function sendCalmusRequest(useInput, shouldRecompose) {
-  let requestString = createRequestString();
-  let orchestrationString = createOrchestrationString(shouldRecompose);
-  let {out_id} = midi.getState();
+  var inputValues = getCompositionSettingsList();
   let {eventList} = recording.getState();
+  let has_empty_strings = inputValues.map(x => x === '');
+  if (has_empty_strings.reduce((a, b) => (a || b))) {
+    NotificationManager.warning("You have to set all settings before composing", "Settings", 5000);
+    return
+  }
   if (eventList.length === 0 && useInput) {
-    NotificationManager.warning("Nothing was recorded", "Recorder", 3000);
+    NotificationManager.warning("Nothing was recorded", "Recorder", 5000);
     return;
   }
-  //NotificationManager.info("Connecting...", "Calmus", 2000);
+  if (!getPartsList().reduce((a,b) => (a || b))) {
+    NotificationManager.warning("You have to select a part to compose for", "Settings", 5000);
+    return
+  }
+  let requestString = inputValues.join(' ');
+  let orchestrationString = createOrchestrationString(shouldRecompose);
+  let {out_id} = midi.getState();
   var url = "ws://89.160.139.113:9001";
   if (window.location.protocol === 'https:')
   {
@@ -151,14 +170,18 @@ export function sendCalmusRequest(useInput, shouldRecompose) {
 
   exampleSocket.onopen = function (stuff) {
     if (!useInput) {
-      exampleSocket.send(requestString + " nil nil nil nil " + orchestrationString);
-      console.log(requestString, orchestrationString);
+      var data = requestString + " nil nil nil nil " + orchestrationString;
+      exampleSocket.send(data);
+      console.log(data);
+      uistate.debugPrint(data);
       NotificationManager.info("Composing...", "Calmus", 2000);
     }
     else if(eventList !== undefined) {
       let new_cell = createListsFromEventList(eventList);
       exampleSocket.send(requestString + new_cell + orchestrationString);
       console.log(requestString, orchestrationString);
+      uistate.debugPrint(requestString + orchestrationString);
+
       NotificationManager.info("Composing with Input...", "Calmus", 2000);
 
     }
@@ -168,6 +191,7 @@ export function sendCalmusRequest(useInput, shouldRecompose) {
   exampleSocket.onmessage = function (message) {
     if (message.data[0] === '(') {
       console.log("this is a composition");
+      console.log(message.data)
       handleCalmusData(message.data, requestString, out_id);
       NotificationManager.info("Composition Ready", "Calmus", 2000);
       calmusState.setRequestString(requestString);

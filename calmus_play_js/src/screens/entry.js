@@ -8,11 +8,17 @@ import Login from '../screens/login'
 import LogInfo from '../screens/loginfo'
 import SettingsList from '../components/settingslist'
 import {initializeFirebase} from '../state/firebase'
+import uistate from '../state/ui'
+import {featureDiscovery} from '../state/features'
 
 export default Component({
   componentDidMount() {
+    uistate.debugPrint("entry mounted");
+    featureDiscovery();
     //console.log("entry mounted")
     initializeFirebase();
+    uistate.debugPrint("firebase initialized")
+
   },
 
   render() {
@@ -29,6 +35,9 @@ export default Component({
               <Calmus />
             </div>
           </div>
+          <div>
+            <textarea className="form-control" rows="5" readOnly value={this.props.debugOutput} />
+          </div>
         </div>
         )
     }
@@ -37,10 +46,14 @@ export default Component({
         <div className="container">
           <NotificationContainer/>
           <Login />
+          <div>
+            <textarea className="form-control" rows="5" readOnly value={this.props.debugOutput} />
+          </div>
         </div>
       )
     }
   }
 }, (state) => ({
-  user: state.firebase.user
+  user: state.firebase.user,
+  debugOutput: state.uistate.debugOutput
 }));

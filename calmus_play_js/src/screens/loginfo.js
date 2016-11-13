@@ -14,7 +14,9 @@ export default Component({
       <nav className="navbar navbar-default">
         <div className="container-fluid">
           <div className="navbar-header">
-            <a className="navbar-brand" href="#">CALMUS</a>
+            <a className="navbar-brand" href="#">
+              <img className="brand-image" src="/calmus_logo.png" height="50" alt="CALMUS" />
+            </a>
           </div>
           <p className="navbar-text navbar-right"><a href="#" className="navbar-link" onClick={this.onSignOutClick}>Sign Out ?</a></p>
           <p className="navbar-text navbar-left">Signed in as <a href="#" className="navbar-link">{this.props.userName}</a></p>

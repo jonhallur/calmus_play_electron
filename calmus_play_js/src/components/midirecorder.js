@@ -3,16 +3,22 @@
  */
 import {Component} from 'jumpsuit'
 import {NotificationManager} from 'react-notifications'
-import {startRecording, stopRecording, setupAudioContext} from '../state/recording'
+import {startRecording, stopRecording} from '../state/recording'
 import {init} from '../pojos/metronome'
 import {sendCalmusRequest} from '../state/calmus'
 import recording from '../state/recording'
+import uistate from '../state/ui'
 
 
 export default Component({
   componentDidMount() {
+    uistate.debugPrint("recorder mounted");
+
     //console.log("init metro");
+
     init();
+    uistate.debugPrint("metro loaded");
+
     //console.log("midi recorder mounted")
   },
 
@@ -35,12 +41,14 @@ export default Component({
       NotificationManager.warning("You are not recording", "Recorder", 2000);
       return
     }
+
     stopRecording(
       this.props.inputHandle,
       this.props.noteOns,
       this.props.noteOffs,
       this.props.metronome
     );
+
     sendCalmusRequest(true, true);
 
   },

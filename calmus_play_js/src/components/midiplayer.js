@@ -3,9 +3,11 @@
  */
 import {Component} from 'jumpsuit'
 import {playFromList, stopPlayback, createDownload} from '../state/player'
+import uistate from '../state/ui'
 
 export default Component({
   componentDidMount() {
+    uistate.debugPrint("player mounted");
     //console.log("midiplayer mounted");
   },
 
