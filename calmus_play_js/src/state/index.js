@@ -8,6 +8,7 @@ import recording from './recording'
 import firebase from './firebase'
 import soundfonts from './soundfont'
 import features from './features'
+import inputcell from './inputcell'
 
 export default {
   uistate,
@@ -17,5 +18,6 @@ export default {
   recording,
   firebase,
   soundfonts,
-  features
+  features,
+  inputcell
 }

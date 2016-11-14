@@ -37,35 +37,40 @@ export default Component({
     this.props.midiFiles.map(x => reverseList.push(x));
     reverseList.reverse();
     return (
-      <div className="col-sm-12">
-        <ul className="list-group midi-player">
-          {reverseList.map((midiFile, index) => (
-            <li className={this.props.playingId === midiFile.uuid ? 'list-group-item player-line' : 'list-group-item'} id={index} key={index}>
-              <div className="">
-                <div id={index} className={this.props.playingId === midiFile.uuid ? 'progress' : ''} style={{width: currentPos + "%"}} ></div>
-                <div className="player-content">
-                  {midiFile.name}
-                  <span className="badge player-tools">
-                  <a id={index} href="#" onClick={this.onPlayBadgeClick}>
-                    <span id={index} className="white-glyph glyphicon glyphicon-play" aria-hidden="true"></span>
-                  </a>
-                </span>
-                  <span className="badge player-tools">
-                  <a id={index} href="#" onClick={this.onStopBadgeClick}>
-                    <span id={index} className="white-glyph glyphicon glyphicon-stop" aria-hidden="true"></span>
-                  </a>
-                </span>
-                  <span className="badge player-tools">
-                  <a id={index} href="#" onClick={this.onDownloadBadgeClick}>
-                    <span id={index} className="white-glyph glyphicon glyphicon-save" aria-hidden="true"></span>
-                  </a>
-                </span>
+    <div className="panel panel-default">
+      <div className="panel-heading">MIDI Player</div>
+      <div className="panel-body">
+        <div className="col-sm-12">
+          <ul className="list-group midi-player">
+            {reverseList.map((midiFile, index) => (
+              <li className={this.props.playingId === midiFile.uuid ? 'list-group-item player-line' : 'list-group-item'} id={index} key={index}>
+                <div className="">
+                  <div id={index} className={this.props.playingId === midiFile.uuid ? 'progress' : ''} style={{width: currentPos + "%"}} ></div>
+                  <div className="player-content">
+                    {midiFile.name}
+                    <span className="badge player-tools">
+                    <a id={index} href="#" onClick={this.onPlayBadgeClick}>
+                      <span id={index} className="white-glyph glyphicon glyphicon-play" aria-hidden="true"></span>
+                    </a>
+                  </span>
+                    <span className="badge player-tools">
+                    <a id={index} href="#" onClick={this.onStopBadgeClick}>
+                      <span id={index} className="white-glyph glyphicon glyphicon-stop" aria-hidden="true"></span>
+                    </a>
+                  </span>
+                    <span className="badge player-tools">
+                    <a id={index} href="#" onClick={this.onDownloadBadgeClick}>
+                      <span id={index} className="white-glyph glyphicon glyphicon-save" aria-hidden="true"></span>
+                    </a>
+                  </span>
+                  </div>
                 </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
+    </div>
     )
   }
 }, (state) => ({

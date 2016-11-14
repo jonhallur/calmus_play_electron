@@ -5,7 +5,7 @@ import {Component} from 'jumpsuit'
 import {NotificationManager} from 'react-notifications'
 import {startRecording, stopRecording} from '../state/recording'
 import {init} from '../pojos/metronome'
-import {sendCalmusRequest} from '../state/calmus'
+import {sendCalmusRequest, missingSettings} from '../state/calmus'
 import recording from '../state/recording'
 import uistate from '../state/ui'
 
@@ -32,6 +32,9 @@ export default Component({
       NotificationManager.error("No Midi input selected", "Midi Error", 3000);
       return
     }
+    if(missingSettings()) {
+      return;
+    }
     startRecording(this.props.tempo, this.props.metronome, this.props.in_id);
   },
 
@@ -41,6 +44,7 @@ export default Component({
       NotificationManager.warning("You are not recording", "Recorder", 2000);
       return
     }
+    console.log("stop recording");
 
     stopRecording(
       this.props.inputHandle,
@@ -48,7 +52,7 @@ export default Component({
       this.props.noteOffs,
       this.props.metronome
     );
-
+    console.log("compose again")
     sendCalmusRequest(true, true);
 
   },

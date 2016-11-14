@@ -93,22 +93,22 @@ export function loadSoundFonts() {
   let ac = audio_context;
   let {instrumentNames} = soundfonts.getState();
   let {ios} = features.getState();
-  if (ios) {
+  if (ios || window.location.hostname === 'localhost') {
     let channels = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-    loadInstrument(channels, instrumentNames[9], ac, 100);
+    loadInstrument(channels, instrumentNames[9], ac, 100, 'mp3');
   }
   else {
     for (let index = 0; index < 16; index++) {
       let fraction = 100.0 / 16.0;
-      loadInstrument([index], instrumentNames[index], ac, fraction);
+      loadInstrument([index], instrumentNames[index], ac, fraction, 'ogg');
     }
   }
 }
 
 export default soundfonts;
 
-function loadInstrument(channels, instrument_name, aud_cxt, percentage) {
-  Soundfont.instrument(aud_cxt, instrument_name, {from: 'http://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/', release: 3, format: 'mp3'}).then(
+function loadInstrument(channels, instrument_name, aud_cxt, percentage, format) {
+  Soundfont.instrument(aud_cxt, instrument_name, {from: 'http://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/', release: 3, format: format}).then(
     function (instr) {
       let {translator} = soundfonts.getState();
       for(let index in channels) {

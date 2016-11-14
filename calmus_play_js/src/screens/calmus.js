@@ -13,6 +13,7 @@ import MidiPlayer from '../components/midiplayer'
 import SaveSettings from '../components/savesettings'
 import SoundFonts from '../components/soundfonts'
 import {loadSoundFonts} from "../state/soundfont";
+import InputCell from '../components/inputcell'
 import features from '../state/features'
 
 export function eventValueHandler(func, event) {
@@ -226,13 +227,9 @@ export default Component({
 
           </div>
         </div>
+      <InputCell />
       <MidiPanel show={this.props.showMidiPanel} />
-      <div className="panel panel-default">
-        <div className="panel-heading">MIDI Player</div>
-        <div className="panel-body">
-          <MidiPlayer/>
-        </div>
-      </div>
+      <MidiPlayer/>
     </div>
 
     )

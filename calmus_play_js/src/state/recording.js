@@ -6,6 +6,7 @@ import WebMidi from 'webmidi'
 import MidiEvent from '../pojos/midievent'
 import * as clickTrack from '../pojos/metronome'
 import soundfonts from './soundfont'
+import {setInputCell} from './inputcell'
 
 var recordingStartTime = 0;
 
@@ -91,7 +92,7 @@ export function startRecording(tempo, metronome, in_id) {
     'all',
     function(e) {
       //console.log("noteoff", e.note, WebMidi.time - recordingStartTime);
-      recording.addNoteOff({note: e.note.number, time: (WebMidi.time - recordingStartTime)})
+      recording.addNoteOff({note: e.note.number, time: (WebMidi.time - recordingStartTime)});
       translator.send(e.data);
     }
   );
@@ -112,6 +113,7 @@ export function stopRecording(inputHandle, noteOns, noteOffs, metronome) {
   recording.setEventList([]);
   if(noteOns.length === 0) {
     recording.clearRecording();
+    NotificationManager.info("Nothing was recorded", "Recorder");
     return;
   }
   let eventList = [];
@@ -153,6 +155,7 @@ export function stopRecording(inputHandle, noteOns, noteOffs, metronome) {
   }
   if (eventList.length > 0) {
     recording.setEventList(eventList);
+    setInputCell(eventList);
     recording.setReady(true);
   }
   recording.clearRecording();
