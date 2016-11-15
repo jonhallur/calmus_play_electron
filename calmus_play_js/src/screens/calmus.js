@@ -15,6 +15,7 @@ import SoundFonts from '../components/soundfonts'
 import {loadSoundFonts} from "../state/soundfont";
 import InputCell from '../components/inputcell'
 import features from '../state/features'
+import CalmusHead from '../components/calmushead'
 
 export function eventValueHandler(func, event) {
   func(event.target.value);
@@ -229,12 +230,11 @@ export default Component({
               <button type="button" className="btn btn-default" onClick={this.onRandomClick}>Random</button>
               <SaveSettings />
             </div>
-
+            <CalmusHead />
           </div>
         </div>
       <InputCell />
-      <MidiPanel show={this.props.showMidiPanel} />
-      <MidiPlayer/>
+      <MidiPanel show={this.props.showMidiPanel} /> <MidiPlayer/>
     </div>
 
     )

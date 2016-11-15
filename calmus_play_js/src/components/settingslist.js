@@ -5,6 +5,7 @@ import {Component} from 'jumpsuit'
 import ui from '../state/ui'
 import {deleteSettings} from '../state/firebase'
 import inputcell, {setInputCell} from '../state/inputcell'
+import {sendCalmusRequest} from '../state/calmus'
 
 const type_to_function = {
   savedSettingsList: setSettingsValues,
@@ -60,6 +61,7 @@ function setInputcell(key, list) {
       let {eventList, name} = cell;
       setInputCell(eventList);
       inputcell.setKeyValue({key: 'name', value: name});
+      sendCalmusRequest(true, true);
     }
   }
 }

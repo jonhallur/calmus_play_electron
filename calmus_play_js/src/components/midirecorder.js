@@ -44,15 +44,12 @@ export default Component({
       NotificationManager.warning("You are not recording", "Recorder", 2000);
       return
     }
-    console.log("stop recording");
-
     stopRecording(
       this.props.inputHandle,
       this.props.noteOns,
       this.props.noteOffs,
       this.props.metronome
     );
-    console.log("compose again")
     sendCalmusRequest(true, true);
 
   },
@@ -85,7 +82,9 @@ export default Component({
         </button>
         <button
           className={this.props.recordingReady ? "btn btn-default" : "hidden"}
-          onClick={this.onRecomposeButtonClick}>Recompose
+          onClick={this.onRecomposeButtonClick}
+          disabled={this.props.waitingForCalmus}
+        >Recompose
         </button>
           <label className="checkbox-inline">
             <input
