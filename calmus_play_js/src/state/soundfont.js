@@ -92,8 +92,8 @@ export function loadSoundFonts() {
   //let ac = new AudioContext();
   let ac = audio_context;
   let {instrumentNames} = soundfonts.getState();
-  let {ios} = features.getState();
-  if (ios || window.location.hostname === 'localhost') {
+  let {ios, ogg} = features.getState();
+  if (ios || window.location.hostname === 'localhost' || !ogg ) {
     let channels = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
     loadInstrument(channels, instrumentNames[9], ac, 100, 'mp3');
   }
@@ -108,11 +108,10 @@ export function loadSoundFonts() {
 export default soundfonts;
 
 function loadInstrument(channels, instrument_name, aud_cxt, percentage, format) {
-  Soundfont.instrument(aud_cxt, instrument_name, {from: 'http://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/', release: 3, format: format}).then(
+  Soundfont.instrument(aud_cxt, instrument_name, {from: 'http://gleitz.github.io/midi-js-soundfonts/MusyngKite/', release: 3, format: format}).then(
     function (instr) {
       let {translator} = soundfonts.getState();
-      for(let index in channels) {
-        let channel = channels[index];
+      for(let channel of channels) {
         instr.listenToMidi(translator[channel], {channel: channel});
         uistate.debugPrint("connected " + channel + " to " + instrument_name)
       }

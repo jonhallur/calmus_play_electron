@@ -25,5 +25,5 @@ export default Component({
     )
   }
 }, (state) => ({
-  userName: state.firebase.userName
+  userName: state.firestate.userName
 }));

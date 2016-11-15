@@ -4,6 +4,7 @@
 import {State} from 'jumpsuit'
 import firebase from 'firebase'
 import {NotificationManager} from 'react-notifications'
+import inputcell from './inputcell'
 
 var firebaseIsInitialized = false;
 var fbapp;
@@ -15,7 +16,7 @@ var fbconfig =  {
   messagingSenderId: "283309000835"
 };
 
-const firestate = State('firebaseState', {
+const firestate = State('firestate', {
   initial: {
     initialized: false,
     showLogin: true,
@@ -23,7 +24,9 @@ const firestate = State('firebaseState', {
     userUid: '',
     userName: '',
     settingsName: '',
-    savedSettingsList: []
+    savedSettingsList: [],
+    savedInputcellsList: [],
+    savedCompositionsList: []
   },
 
   setInitialized: (state, payload) => ({
@@ -54,6 +57,10 @@ const firestate = State('firebaseState', {
     savedSettingsList: payload
   }),
 
+  setKeyValue: (state, payload) => ({
+    [payload.key]: payload.value
+  }),
+
 
 });
 
@@ -82,14 +89,37 @@ export function initializeFirebase() {
             settingsList.push({...childSnapShot.val(), uid: key})
           });
           firestate.setSavedSettingsList(settingsList);
-
-
         }, function (error) {
           var errorCode = error.code;
           var errorMessage = error.message;
-          NotificationManager.error(errorMessage, "Get All", 5000);
-        })
+          NotificationManager.error(errorMessage, "Settings", 5000);
+        });
 
+        fbapp.database().ref('inputcells/' + user.uid).on('value', function(snapshot){
+          let inputcellslist = [];
+          snapshot.forEach(function(childSnapShot) {
+            let key = childSnapShot.key;
+            inputcellslist.push({...childSnapShot.val(), uid: key})
+          });
+          firestate.setKeyValue({key: 'savedInputcellsList', value: inputcellslist});
+        }, function (error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          NotificationManager.error(errorMessage, "Settings", 5000);
+        });
+
+        fbapp.database().ref('inputcell/' + user.uid).on('value', function(snapshot){
+          let compositionsList = [];
+          snapshot.forEach(function(childSnapShot) {
+            let key = childSnapShot.key;
+            compositionsList.push({...childSnapShot.val(), uid: key})
+          });
+          firestate.setKeyValue({key: 'savedCompositionsList', value: compositionsList});
+        }, function (error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          NotificationManager.error(errorMessage, "Settings", 5000);
+        });
 
       }
     } else {
@@ -127,18 +157,42 @@ export function logOutUser() {
   });
 }
 
-export function saveSettings(settingsObject, userUid) {
-  let {transpose, speed, type, color, interval, polyphony, scale} = settingsObject;
-  fbapp.database().ref('settings/' + userUid).push(settingsObject)
+export function saveSettings(settingsObject, path='settings') {
+  let {userUid} = firestate.getState();
+  let refstring = [path, userUid].join('/');
+  fbapp.database().ref(refstring).push(settingsObject);
 }
 
-export function deleteSettings(settings_id, userUid) {
-  let refstring = ['settings', userUid, settings_id].join('/');
-  fbapp.database().ref(refstring).remove(function (error)  {
-    if(error) {
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      NotificationManager.error(errorMessage, "Delete Settings", 5000);
-    }
-  })
+export function deleteSettings(settings_id, path) {
+  let {userUid} = firestate.getState();
+  let refstring = [path, userUid, settings_id].join('/');
+  if (userUid) {
+    fbapp.database().ref(refstring).remove(function (error)  {
+      if(error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        NotificationManager.error(errorMessage, "Delete Settings", 5000);
+      }
+    })
+  }
+
+}
+
+export function saveInputCell() {
+  let {eventList, name} = inputcell.getState();
+  let {userUid} = firestate.getState();
+  if (userUid) {
+    fbapp.database().ref('inputcells/' + userUid).push({name: name, eventList: eventList, created: Date.now()}).catch(
+      function(error) {
+        if(error) {
+          NotificationManager.error(error.message, "Save Input Cell", 5000);
+        }
+        else {
+          inputcell.doneSaving();
+        }
+      }
+    ).then(function() {
+      inputcell.doneSaving();
+    })
+  }
 }

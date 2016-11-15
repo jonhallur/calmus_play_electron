@@ -8,6 +8,7 @@ import MidiEvent from '../pojos/midievent'
 import uistate from './ui'
 import midi from './midi'
 import recording from './recording'
+import inputcell from './inputcell'
 
 var SERVER = '';
 
@@ -158,7 +159,7 @@ export function sendCalmusRequest(useInput, shouldRecompose) {
   if (missingSettings()) {
     return;
   }
-  let {eventList} = recording.getState();
+  let {eventList} = inputcell.getState();
   if (eventList.length === 0 && useInput) {
     NotificationManager.warning("Nothing was recorded", "Recorder", 5000);
     return;
@@ -212,8 +213,15 @@ export function sendCalmusRequest(useInput, shouldRecompose) {
 
   exampleSocket.onerror = function (error) {
     NotificationManager.error('Connection to server failed', 'Calmus ERROR', 5000);
+    calmusState.setCalmusConnection(false);
+    calmusState.setWaitingForCalmus(false);
   };
 
+  exampleSocket.onclose = function (args) {
+    NotificationManager.info('Connection closed', 'Calmus', 3000);
+    calmusState.setCalmusConnection(false);
+    calmusState.setWaitingForCalmus(false);
+  }
 }
 
 function createEventList(attackList, channelList, pitchList, durationList, velocityList) {

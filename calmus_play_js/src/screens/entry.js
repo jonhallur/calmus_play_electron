@@ -6,7 +6,7 @@ import {NotificationContainer} from 'react-notifications'
 import Calmus from '../screens/calmus'
 import Login from '../screens/login'
 import LogInfo from '../screens/loginfo'
-import SettingsList from '../components/settingslist'
+import LibraryContainer from '../components/librarycontainer'
 import {initializeFirebase} from '../state/firebase'
 import uistate from '../state/ui'
 import {featureDiscovery} from '../state/features'
@@ -29,7 +29,7 @@ export default Component({
           <LogInfo />
           <div className="row">
             <div className="col-sm-3">
-              <SettingsList />
+              <LibraryContainer />
             </div>
             <div className="col-sm-9">
               <Calmus />
@@ -54,6 +54,6 @@ export default Component({
     }
   }
 }, (state) => ({
-  user: state.firebase.user,
+  user: state.firestate.user,
   debugOutput: state.uistate.debugOutput
 }));

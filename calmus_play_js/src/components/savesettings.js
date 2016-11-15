@@ -15,9 +15,15 @@ export default Component({
       color: this.props.colorValue,
       interval: this.props.intervalValue,
       polyphony: this.props.polyphonyValue,
-      scale: this.props.scaleValue
+      scale: this.props.scaleValue,
+      addWood: this.props.addWood,
+      addBrass: this.props.addBrass,
+      addStrings: this.props.addStrings,
+      addPercussion: this.props.addPercussion,
+      melodyStrong: this.props.melodyStrong,
+      harmonyStrong: this.props.harmonyStrong,
     };
-    saveSettings(settings, this.props.userUid);
+    saveSettings(settings);
     firebase.setSettingsName('');
   },
 
@@ -58,6 +64,13 @@ export default Component({
   intervalValue: state.uistate.intervalValue,
   polyphonyValue: state.uistate.polyphonyValue,
   scaleValue: state.uistate.scaleValue,
-  settingsName: state.firebase.settingsName,
-  userUid: state.firebase.userUid
+  settingsName: state.firestate.settingsName,
+  userUid: state.firestate.userUid,
+  addWood: state.uistate.addWood,
+  addBrass: state.uistate.addBrass,
+  addStrings: state.uistate.addStrings,
+  addPercussion: state.uistate.addPercussion,
+  melodyStrong: state.uistate.melodyStrong,
+  harmonyStrong: state.uistate.harmonyStrong,
+
 }))

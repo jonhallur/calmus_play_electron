@@ -69,7 +69,11 @@ export default Component({
   render() {
     return (
       <div className="col-sm-6 btn-toolbar">
-        <button className="btn btn-default" onClick={this.onStartRecButtonClick}>
+        <button
+          className="btn btn-default"
+          onClick={this.onStartRecButtonClick}
+          disabled={this.props.waitingForCalmus}
+        >
           <span className="glyphicon glyphicon-registration-mark" aria-hidden="true"></span>
           Start Recording
         </button>
@@ -119,6 +123,7 @@ export default Component({
   noteOns: state.recording.noteOns,
   noteOffs: state.recording.noteOffs,
   tickLength: state.midistate.tick_length,
-  recordingReady: state.recording.ready,
-  tempo: state.recording.tempo
+  recordingReady: state.inputcell.ready,
+  tempo: state.recording.tempo,
+  waitingForCalmus: state.calmus_state.waitingForCalmus
 }));

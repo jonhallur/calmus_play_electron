@@ -24,6 +24,7 @@
     "jquery": "^3.1.1",
     "jumpsuit": "^0.7.5",
     "lodash": "^4.14.1",
+    "midi-note": "^1.0.0",
     "midifile": "^1.0.4",
     "midijs": "^0.12.0",
     "midiplayer": "^1.0.0",

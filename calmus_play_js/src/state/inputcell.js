@@ -3,15 +3,23 @@
  */
 import {State} from 'jumpsuit'
 import _ from 'lodash'
+import midinote from 'midi-note'
 
 const inputcell = State('inputcell',{
   initial: {
     eventList: [],
     ready: false,
+    name: '',
+    inputOpen: false,
   },
 
   setKeyValue: (state, payload) => ({
     [payload.key]: payload.value
+  }),
+
+  doneSaving: (state, payload) => ({
+    name: '',
+    inputOpen: false,
   })
 });
 
@@ -40,6 +48,14 @@ function getEventsInfo(eventList) {
 export function setInputCell(eventList) {
   inputcell.setKeyValue({key: 'eventList', value: eventList});
   inputcell.setKeyValue({key: 'ready', value: true});
+  drawInputCell();
+}
+
+export function drawInputCell() {
+  let {eventList} = inputcell.getState();
+  if(eventList.length === 0) {
+    return;
+  }
   let canvas = document.getElementById('inputcell');
   let ctx = canvas.getContext('2d');
   let startTime = _.first(eventList).attack;
@@ -48,7 +64,13 @@ export function setInputCell(eventList) {
   let relativeRangeX = endTime - startTime;
   let relativeRangeY = eventsInfo.max - eventsInfo.min;
   ctx.clearRect(0,0,canvas.width,canvas.height);
-
+  let lowNote = midinote(eventsInfo.min);
+  let highNote = midinote(eventsInfo.max);
+  ctx.font = "bold 14px sans-serif";
+  ctx.beginPath();
+  ctx.fillStyle = 'red';
+  ctx.fillText(lowNote, 0, 100);
+  ctx.fillText(highNote, 0, 14);
   for(let i = 0; i < eventList.length; i ++) {
     let event = eventList[i];
     let eventRelativeStart = (event.attack - startTime) / relativeRangeX;
@@ -62,10 +84,6 @@ export function setInputCell(eventList) {
     ctx.moveTo(fromX, y);
     ctx.lineTo(toX, y);
     ctx.stroke();
-    console.log(fromX, toX, y);
   }
-
-
-
 
 }

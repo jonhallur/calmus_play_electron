@@ -9,6 +9,7 @@ const features = State('features',{
   initial: {
     midi: false,
     ios: false,
+    ogg: false,
   },
 
   setKeyValue: (state, payload) => ({
@@ -21,6 +22,9 @@ export default features
 export function featureDiscovery() {
   if (iOS()) {
     features.setKeyValue({key:'ios', value: true});
+  }
+  if (Ogg()) {
+    features.setKeyValue({key:'ogg', value: true})
   }
 }
 
@@ -41,4 +45,11 @@ function iOS() {
     }
   }
   return false;
+}
+
+function Ogg() {
+  let audio = document.createElement('audio');
+  let canPlayOgg = audio.canPlayType('audio/ogg; codecs="vorbis"');
+  var result = (canPlayOgg === 'probably');
+  return result;
 }

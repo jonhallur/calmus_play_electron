@@ -77,7 +77,7 @@ export default Component({
     )
   }
 }, (state) => ({
-  showLogin: state.firebase.showLogin,
-  initialized: state.firebase.initialized,
-  userName: state.firebase.userName
+  showLogin: state.firestate.showLogin,
+  initialized: state.firestate.initialized,
+  userName: state.firestate.userName
 }));

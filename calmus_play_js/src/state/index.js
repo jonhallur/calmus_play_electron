@@ -5,7 +5,7 @@ import calmus_state from './calmus'
 import midistate from './midi'
 import midi_player from './player'
 import recording from './recording'
-import firebase from './firebase'
+import firestate from './firebase'
 import soundfonts from './soundfont'
 import features from './features'
 import inputcell from './inputcell'
@@ -16,7 +16,7 @@ export default {
   midistate,
   midi_player,
   recording,
-  firebase,
+  firestate,
   soundfonts,
   features,
   inputcell

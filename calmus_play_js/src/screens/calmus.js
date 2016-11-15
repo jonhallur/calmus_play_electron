@@ -220,7 +220,12 @@ export default Component({
               </label>
             </form>
             <div className="btn-toolbar">
-              <button type="button" className="btn btn-default btn-primary" onClick={this.onComposeClick}>Compose</button>
+              <button
+                type="button"
+                className="btn btn-default btn-primary"
+                onClick={this.onComposeClick}
+                disabled={this.props.waitingForCalmus}
+              >Compose</button>
               <button type="button" className="btn btn-default" onClick={this.onRandomClick}>Random</button>
               <SaveSettings />
             </div>
@@ -259,6 +264,7 @@ export default Component({
   recordingsList: state.recording.eventList,
   debugOutput: state.uistate.debugOutput,
   showMidiPanel: state.features.midi,
+  waitingForCalmus: state.calmus_state.waitingForCalmus,
 
 
 }))

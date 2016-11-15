@@ -54,7 +54,10 @@ const uistate = State('uistate', {
       "Whole-tone",
       "Overtone"
     ],
-    debugOutput: ''
+    debugOutput: '',
+    settingsActive: true,
+    inputcellsActive: false,
+    compositionsActive: false,
   },
 
   setKeyValue: (state, payload) => ({
