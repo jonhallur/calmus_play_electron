@@ -168,10 +168,10 @@ export function sendCalmusRequest(useInput, shouldRecompose) {
   let requestString = inputValues.join(' ');
   let orchestrationString = createOrchestrationString(shouldRecompose);
   let {out_id} = midi.getState();
-  var url = "ws://89.160.139.113:9001";
+  var url = "ws://89.160.139.113:9010";
   if (window.location.protocol === 'https:')
   {
-    url = "wss://89.160.139.113:9001";
+    url = "wss://89.160.139.113:9010";
   }
   var exampleSocket = new WebSocket(url);
   calmusState.setWaitingForCalmus(true);
