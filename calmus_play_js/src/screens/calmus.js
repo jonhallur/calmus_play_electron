@@ -9,7 +9,7 @@ import {getMidiPorts} from '../state/midi'
 import MidiSelector from '../components/midiselector'
 import {NotificationManager} from 'react-notifications'
 import MidiRecorder from '../components/midirecorder'
-import MidiPlayer from '../components/midiplayer'
+import MidiPlayer from '../components/midiplayerlist'
 import SaveSettings from '../components/savesettings'
 import SoundFonts from '../components/soundfonts'
 import {loadSoundFonts} from "../state/soundfont";

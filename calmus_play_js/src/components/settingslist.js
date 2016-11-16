@@ -6,6 +6,7 @@ import ui from '../state/ui'
 import {deleteSettings} from '../state/firebase'
 import inputcell, {setInputCell} from '../state/inputcell'
 import {sendCalmusRequest} from '../state/calmus'
+import {addPlayerFile} from '../state/player'
 
 const type_to_function = {
   savedSettingsList: setSettingsValues,
@@ -25,6 +26,7 @@ function setSettingsValues(key, list) {
       let {
         transpose,
         speed,
+        rhythmComplexity,
         size,
         color,
         interval,
@@ -40,6 +42,7 @@ function setSettingsValues(key, list) {
 
       ui.setTranspose(transpose);
       ui.setSpeed(speed);
+      ui.setKeyValue({key: 'rhythmComplexity', value: rhythmComplexity});
       ui.setSize(size);
       ui.setColor(color);
       ui.setInteval(interval);
@@ -67,7 +70,11 @@ function setInputcell(key, list) {
 }
 
 function setComposition(key, list) {
-
+  for (let comp of list) {
+    if (comp.uid === key) {
+      addPlayerFile(comp)
+    }
+  }
 }
 
 export default Component({

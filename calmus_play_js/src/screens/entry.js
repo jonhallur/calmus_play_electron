@@ -35,9 +35,6 @@ export default Component({
               <Calmus />
             </div>
           </div>
-          <div>
-            <textarea className="form-control" rows="5" readOnly value={this.props.debugOutput} />
-          </div>
         </div>
         )
     }
@@ -46,9 +43,6 @@ export default Component({
         <div className="container">
           <NotificationContainer/>
           <Login />
-          <div>
-            <textarea className="form-control" rows="5" readOnly value={this.props.debugOutput} />
-          </div>
         </div>
       )
     }

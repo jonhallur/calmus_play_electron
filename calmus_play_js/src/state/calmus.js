@@ -199,7 +199,7 @@ export function sendCalmusRequest(useInput, shouldRecompose) {
 
   exampleSocket.onmessage = function (message) {
     if (message.data[0] === '(') {
-      handleCalmusData(message.data, requestString, out_id);
+      handleCalmusData(message.data);
       NotificationManager.info("Composition Ready", "Calmus", 2000);
       calmusState.setRequestString(requestString);
       calmusState.setCalmusConnection(false);
@@ -239,14 +239,13 @@ function createEventList(attackList, channelList, pitchList, durationList, veloc
   }
   return midiEventList;
 }
-function handleCalmusData(calmusData, requestString, out_id) {
+function handleCalmusData(calmusData) {
   let lists = calmusData.split('(');
   let attackList = lists[2].split(')')[0].split(' ');
   let channelList = lists[3].split(')')[0].split(' ');
   let pitchList = lists[4].split(')')[0].split(' ');
   let durationList = lists[5].split(')')[0].split(' ');
   let velocityList = lists[6].split(')')[0].split(' ');
-  //let adjective = lists[6].split(')')[1];
   let settingsList = lists[7].split(')')[0].split(' ');
   let num_mel = settingsList[0];
   let interval = settingsList[1];
@@ -255,6 +254,9 @@ function handleCalmusData(calmusData, requestString, out_id) {
   uistate.setInteval(interval);
   uistate.setScale(scale);
   let compositionText = lists[8].split(')')[0];
+  let adjective = compositionText.split(' - ')[0];
+  let description = compositionText.split(' - ')[1];
+  console.log(adjective, description);
   let midiEventList = createEventList(attackList, channelList, pitchList, durationList, velocityList);
 
   calmusState.setAttackList(attackList);
@@ -264,7 +266,7 @@ function handleCalmusData(calmusData, requestString, out_id) {
   calmusState.setVelocityList(velocityList);
   calmusState.setMidiEventList(midiEventList);
   calmusState.setCompositionReady(true);
-  createMidiFile(midiEventList, compositionText, out_id)
+  createMidiFile(midiEventList, {adjective, description})
 }
 
 window.calmusstate = calmusState;

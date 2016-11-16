@@ -45,7 +45,7 @@ export default Component({
               <SettingsList type="savedInputcellsList"/>
             </div>
             <div role="tabpanel" className={compositionsActive ? "tab-pane active" : "tab-pane" } id="compositions">
-
+              <SettingsList type="savedCompositionsList"/>
             </div>
           </div>
         </div>

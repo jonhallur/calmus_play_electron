@@ -108,7 +108,7 @@ export function initializeFirebase() {
           NotificationManager.error(errorMessage, "Settings", 5000);
         });
 
-        fbapp.database().ref('inputcell/' + user.uid).on('value', function(snapshot){
+        fbapp.database().ref('compositions/' + user.uid).on('value', function(snapshot){
           let compositionsList = [];
           snapshot.forEach(function(childSnapShot) {
             let key = childSnapShot.key;
@@ -178,21 +178,33 @@ export function deleteSettings(settings_id, path) {
 
 }
 
+function firebasePush(path, userUid, payload, errorTitle) {
+  fbapp.database().ref(path + userUid).push(payload).catch(
+    function (error) {
+      if (error) {
+
+        NotificationManager.error(error.message, errorTitle, 5000);
+      }
+    }
+  );
+}
 export function saveInputCell() {
   let {eventList, name} = inputcell.getState();
   let {userUid} = firestate.getState();
   if (userUid) {
-    fbapp.database().ref('inputcells/' + userUid).push({name: name, eventList: eventList, created: Date.now()}).catch(
-      function(error) {
-        if(error) {
-          NotificationManager.error(error.message, "Save Input Cell", 5000);
-        }
-        else {
-          inputcell.doneSaving();
-        }
-      }
-    ).then(function() {
-      inputcell.doneSaving();
-    })
+    let path = 'inputcell/';
+    let data = {name: name, eventList: eventList, created: Date.now()};
+    let errorTitle = "Save Input Cell";
+    firebasePush(path, userUid, data, errorTitle);
+    inputcell.doneSaving();
+  }
+}
+
+export function saveComposition(composition) {
+  let {userUid} = firestate.getState();
+  if (userUid) {
+    let path = 'compositions/';
+    let errorTitle = "Save composition";
+    firebasePush(path, userUid, composition, errorTitle)
   }
 }

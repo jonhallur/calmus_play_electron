@@ -117,7 +117,14 @@ function createFileHeader() {
   return file;
 }
 
-export function createMidiFile(midiEvents, settings, out_id){
+export function addPlayerFile(data) {
+  player.addFile(data);
+  let {translator} = soundfonts.getState();
+  let midiplayer = new MIDIPlayer({'output': translator});
+  player.addPlayer(midiplayer);
+}
+
+export function createMidiFile(midiEvents, {adjective, description}){
   var file = createFileHeader();
   let midi_channels = [];
   let last_event_time = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
@@ -139,15 +146,19 @@ export function createMidiFile(midiEvents, settings, out_id){
     binaryData = data;
 
   });
-  player.addFile({name: settings, data:binaryData, uuid: uuid()});
-  let {translator} = soundfonts.getState();
-  let midiplayer = new MIDIPlayer({'output': translator});
-  player.addPlayer(midiplayer);
+  let data = {
+    name: adjective,
+    description: description,
+    data:binaryData,
+    uuid: uuid(),
+    created: new Date().toLocaleDateString(),
+    time: new Date().toLocaleTimeString(),
+  };
+  addPlayerFile(data);
 }
 
 export function playFromList(compositions, players, index, interval) {
   let id = players.length - 1 - index;
-
   let composition = compositions[id];
   let player_instance = players[id];
   if (player_instance === '')
@@ -161,6 +172,9 @@ export function playFromList(compositions, players, index, interval) {
     clearInterval(interval);
   }
   let {data, name, uuid} = composition;
+  if (data instanceof Array) {
+    data = new Uint8Array(data)
+  }
   let midiFile = new MIDIFile(data.buffer);
   player_instance.load(midiFile);
   let play_time = Math.round((player_instance.events.slice(-1)[0].playTime)/1000);
