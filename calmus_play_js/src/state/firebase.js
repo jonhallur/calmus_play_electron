@@ -5,6 +5,7 @@ import {State} from 'jumpsuit'
 import firebase from 'firebase'
 import {NotificationManager} from 'react-notifications'
 import inputcell from './inputcell'
+import uuid from 'uuid'
 
 var firebaseIsInitialized = false;
 var fbapp;
@@ -112,7 +113,7 @@ export function initializeFirebase() {
           let compositionsList = [];
           snapshot.forEach(function(childSnapShot) {
             let key = childSnapShot.key;
-            compositionsList.push({...childSnapShot.val(), uid: key})
+            compositionsList.push({...childSnapShot.val(), uid: key, uuid: uuid()})
           });
           firestate.setKeyValue({key: 'savedCompositionsList', value: compositionsList});
         }, function (error) {

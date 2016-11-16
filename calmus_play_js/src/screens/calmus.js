@@ -69,6 +69,7 @@ export default Component({
   render() {
     return (
       <div>
+        <CalmusHead />
         <SoundFonts/>
         <div className="panel panel-default">
           <div className="panel-heading">Settings</div>
@@ -230,7 +231,7 @@ export default Component({
               <button type="button" className="btn btn-default" onClick={this.onRandomClick}>Random</button>
               <SaveSettings />
             </div>
-            <CalmusHead />
+
           </div>
         </div>
       <InputCell />

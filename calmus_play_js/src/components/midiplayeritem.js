@@ -27,7 +27,7 @@ export default Component({
 
   onSaveBadgeClick(event) {
     event.preventDefault();
-    let id = event.target.id;
+    let id = this.props.players.length - 1 - event.target.id;
     let composition = this.props.midiFiles[id];
     saveComposition(composition);
   },
@@ -40,7 +40,6 @@ export default Component({
 
   onDownloadBadgeClick(event) {
     event.preventDefault();
-    //let id = event.target.id;
     let id = this.props.players.length - 1 - event.target.id;
     let composition = this.props.midiFiles[id];
     createDownload(composition.name + ".mid", composition.data);
