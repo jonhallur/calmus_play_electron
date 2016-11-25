@@ -18,7 +18,6 @@ const customStyles = {
 
 export default Component({
   render () {
-    let {instrumentNames} = this.props;
     return (
       <div>
         <Modal
@@ -26,15 +25,14 @@ export default Component({
           style={customStyles} >
 
           <h2 ref="subtitle">Please wait while sounds are loading</h2>
-            <p>{this.props.loadingPercentage}% - {this.props.loadingText}</p>
+            <p>{this.props.loadingText} - {this.props.loadingPercentage} %</p>
         </Modal>
       </div>
     )
   }
 }, (state) => ({
-  instrumentNames: state.soundfonts.instrumentNames,
-  loadingPercentage: state.soundfonts.loadingPercentage,
   loadingText: state.soundfonts.loadingText,
+  loadingPercentage: state.soundfonts.loadingPercentage,
   ready: state.soundfonts.ready,
 }))
 

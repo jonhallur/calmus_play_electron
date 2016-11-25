@@ -67,7 +67,7 @@ function scheduleNote( beatNumber, time ) {
   else                        // other 16th notes = low pitch
     osc.frequency.value = 220.0;
 
-  gainNode.gain.value = 0.15;
+  gainNode.gain.value = 0.50;
   osc.start( time );
   osc.stop( time + noteLength );
 }

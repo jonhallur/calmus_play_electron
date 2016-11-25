@@ -3,7 +3,7 @@ import {State} from 'jumpsuit'
 const uistate = State('uistate', {
   initial: {
     transposeValue: 0,
-    speedValue: 750,
+    speedValue: 0,
     rhythmComplexity: 0.5,
     sizeValue: '',
     colorValue: '',

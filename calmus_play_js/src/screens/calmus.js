@@ -7,14 +7,12 @@ import ui_state from '../state/ui'
 import {sendCalmusRequest} from '../state/calmus'
 import {getMidiPorts} from '../state/midi'
 import MidiSelector from '../components/midiselector'
-import {NotificationManager} from 'react-notifications'
 import MidiRecorder from '../components/midirecorder'
 import MidiPlayer from '../components/midiplayerlist'
 import SaveSettings from '../components/savesettings'
 import SoundFonts from '../components/soundfonts'
 import {loadSoundFonts} from "../state/soundfont";
 import InputCell from '../components/inputcell'
-import features from '../state/features'
 import CalmusHead from '../components/calmushead'
 
 export function eventValueHandler(func, event) {
@@ -31,7 +29,7 @@ export default Component({
   componentDidMount() {
     //console.log("Calmus did mount");
     ui_state.setTranspose(0);
-    ui_state.setSpeed(750);
+    ui_state.setSpeed(0);
     ui_state.setSize('');
     ui_state.setColor('');
     ui_state.setInteval('');
@@ -100,8 +98,8 @@ export default Component({
                     className=""
                     id="speed"
                     type="range"
-                    min="-100"
-                    max="1000"
+                    min="-20"
+                    max="20"
                     step="1"
                     value={this.props.speedValue}
                     onChange={eventValueHandler.bind(this, ui_state.setSpeed)}
@@ -112,7 +110,7 @@ export default Component({
                 </div>
               </div>
               <div className="form-group">
-                <label className="col-sm-1" htmlFor="speed">Rhythm Complexity</label>
+                <label className="col-sm-1" htmlFor="rhythmComplexity">Rhythm Complexity</label>
                 <div className="col-sm-8">
                   <input
                     className=""

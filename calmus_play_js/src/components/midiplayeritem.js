@@ -48,7 +48,6 @@ export default Component({
   render () {
     let {midiFile, index, current_position, current_length} = this.props;
     let currentPos = 100 - (current_position / current_length) * 100;
-    let descriptionStyle = this.state.hover ? "inline" : "none";
     return (
       <li
         className={this.props.playingId === midiFile.uuid ? 'list-group-item player-line' : 'list-group-item'}
@@ -56,6 +55,7 @@ export default Component({
         key={index}
         onMouseEnter={this.showDescription}
         onMouseLeave={this.hideDescription}
+        onClick={() => this.setState({hover: !this.state.hover})}
       >
         <div className="">
           <div id={index} className={this.props.playingId === midiFile.uuid ? 'progress' : ''} style={{width: currentPos + "%"}} ></div>
@@ -84,7 +84,7 @@ export default Component({
             </p>
             <p
               className="player-subtitle"
-              style={{display: descriptionStyle}}
+              style={{display: this.state.hover ? "inline" : "none"}}
             >Created {midiFile.created} {midiFile.description}</p>
           </div>
         </div>
