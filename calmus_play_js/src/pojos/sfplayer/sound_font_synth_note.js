@@ -147,7 +147,7 @@ export class SoundFontSynthesizerNote {
     this.updatePitchBend(this.pitchBend);
 
     // audio node
-    panner = this.panner = ctx.createPanner();
+    panner = this.panner = ctx.createStereoPanner();
     output = this.gainOutput = ctx.createGainNode();
     outputGain = output.gain;
 
@@ -157,11 +157,14 @@ export class SoundFontSynthesizerNote {
 
     // panpot
     panner.panningModel = "equalpower";
+    /*
     panner.setPosition(
       Math.sin(this.panpot * Math.PI / 2),
       0,
       Math.cos(this.panpot * Math.PI / 2)
-    );
+    );*/
+      //panner.setPosition(0,0,0);
+    //panner.pan(0)
 
     //---------------------------------------------------------------------------
     // Attack, Decay, Sustain
@@ -228,11 +231,12 @@ export class SoundFontSynthesizerNote {
     // Release
     //---------------------------------------------------------------------------
     output.gain.cancelScheduledValues(0);
+    console.log(now, volEndTime);
     output.gain.linearRampToValueAtTime(0, volEndTime);
     bufferSource.playbackRate.cancelScheduledValues(0);
     bufferSource.playbackRate.linearRampToValueAtTime(this.computedPlaybackRate, modEndTime);
 
-    bufferSource.loop = false;
+    //bufferSource.loop = false;
     bufferSource.stop(volEndTime);
 
     // disconnect

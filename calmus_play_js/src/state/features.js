@@ -2,8 +2,6 @@
  * Created by jonh on 13.11.2016.
  */
 import {State} from 'jumpsuit'
-import uistate from './ui'
-import audio_context from 'audio-context'
 
 const features = State('features',{
   initial: {
@@ -47,9 +45,11 @@ function iOS() {
   return false;
 }
 
+/**
+ * @return {boolean}
+ */
 function Ogg() {
   let audio = document.createElement('audio');
   let canPlayOgg = audio.canPlayType('audio/ogg; codecs="vorbis"');
-  var result = (canPlayOgg === 'probably');
-  return result;
+  return (canPlayOgg === 'probably');
 }

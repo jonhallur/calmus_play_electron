@@ -5,11 +5,10 @@ import {State} from 'jumpsuit'
 import {File} from 'midijs'
 import MIDIPlayer from 'midiplayer'
 import MIDIFile from 'midifile'
-import WebMidi from 'webmidi'
 import {NotificationManager} from 'react-notifications'
-import MidiEvent from '../pojos/midievent'
 import uuid from 'uuid'
 import soundfonts from './soundfont'
+import audio_context from '../pojos/audiocontext'
 
 const MS_PER_MINUTE = 60;
 const DEFAULT_TEMPO = 120;
@@ -220,3 +219,17 @@ export function createDownload(filename,text) {
   document.body.removeChild(link);
 }
 
+export function activatePlaybackIOS(event) {
+  // create empty buffer
+  let myContext = audio_context();
+  var buffer = myContext.createBuffer(1, 1, 22050);
+  var source = myContext.createBufferSource();
+  source.buffer = buffer;
+
+  // connect to output (your speakers)
+  source.connect(myContext.destination);
+
+  // play the file
+  source.start(0);
+
+}

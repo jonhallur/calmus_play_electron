@@ -6,7 +6,7 @@ import {SoundFontParser} from './sound_font_parser'
  */
 
 export class SoundFontSynthesizer {
-  constructor(input) {
+  constructor(input, audioContext) {
     /** @type {Uint8Array} */
     this.input = input;
     /** @type {SoundFontParser} */
@@ -18,7 +18,11 @@ export class SoundFontSynthesizer {
     /** @type {number} */
     this.bufferSize = 1024;
     /** @type {AudioContext} */
-    this.ctx = this.getAudioContext();
+    //this.ctx = this.getAudioContext();
+    this.ctx = audioContext;
+    if (this.ctx.createGainNode === void 0) {
+      this.ctx.createGainNode = this.ctx.createGain;
+    }
     /** @type {AudioGainNode} */
     this.gainMaster = this.ctx.createGainNode();
     /** @type {DynamicsCompressorNode} */

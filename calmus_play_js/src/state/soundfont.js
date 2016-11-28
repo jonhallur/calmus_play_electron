@@ -5,10 +5,11 @@ import {State} from 'jumpsuit'
 import Soundfont from 'soundfont-player'
 import midistate from './midi'
 import WebMidi from 'webmidi'
-import audio_context from 'audio-context'
+import audio_context from '../pojos/audiocontext'
 import features from './features'
 import uistate from './ui'
 import {SoundFontSynthesizer} from '../pojos/sfplayer/sound_font_synth'
+
 //import '../pojos/audiocontextmonkeypatch'
 
 var selected_midi_output;
@@ -157,7 +158,7 @@ function onUpdateLoadingProgress (oEvent) {
 function onSoundFontLoaded(event) {
   let {translator} = soundfonts.getState();
   let data = event.target.response;
-  let synth = new SoundFontSynthesizer(new Uint8Array(data));
+  let synth = new SoundFontSynthesizer(new Uint8Array(data), audio_context());
 
   synth.init();
   synth.start();
@@ -174,7 +175,7 @@ function onSoundFontLoaded(event) {
 
 
 function loadInstrument(channels, instrument_name, percentage, options) {
-  let aud_cxt = audio_context;
+  let aud_cxt = audio_context();
 
   Soundfont.instrument(
     aud_cxt,

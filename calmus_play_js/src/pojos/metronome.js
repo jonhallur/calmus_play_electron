@@ -1,6 +1,6 @@
 import work from 'webworkify'
 import worker from './worker'
-import audio_context from 'audio-context'
+import audio_context from '../pojos/audiocontext'
 
 var audioContext = null;
 var isPlaying = false;      // Are we currently playing?
@@ -107,7 +107,7 @@ export function init(){
   //console.log("Met init");
   //window.AudioContext = window.AudioContext || window.webkitAudioContext;
   //audioContext = new AudioContext();
-  audioContext = audio_context;
+  audioContext = audio_context();
   // if we wanted to load audio files, etc., this is where we should do it.
   timerWorker = work(worker);
 

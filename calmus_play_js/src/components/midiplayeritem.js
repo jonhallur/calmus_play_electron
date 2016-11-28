@@ -2,8 +2,9 @@
  * Created by jonh on 16.11.2016.
  */
 import {Component} from 'jumpsuit'
-import {playFromList, stopPlayback, createDownload} from '../state/player'
+import {playFromList, stopPlayback, createDownload, activatePlaybackIOS} from '../state/player'
 import {saveComposition} from '../state/firebase'
+import {NotificationManager} from 'react-notifications'
 
 export default Component({
   getInitialState() {
@@ -22,6 +23,10 @@ export default Component({
   onPlayBadgeClick(event) {
     event.preventDefault();
     let id = event.target.id;
+    if (this.props.isIOS) {
+      activatePlaybackIOS(event);
+      NotificationManager.info("Activating IOS audio", "IOS");
+    }
     playFromList(this.props.midiFiles, this.props.players, id, this.props.countdown)
   },
 
@@ -97,5 +102,6 @@ export default Component({
   current_length: state.midi_player.current_length,
   current_position: state.midi_player.current_position,
   playingId: state.midi_player.current_id,
+  isIOS: state.features.ios,
 
 }))
