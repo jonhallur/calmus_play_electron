@@ -20,11 +20,8 @@ export class SoundFontSynthesizer {
     /** @type {AudioContext} */
     //this.ctx = this.getAudioContext();
     this.ctx = audioContext;
-    if (this.ctx.createGainNode === void 0) {
-      this.ctx.createGainNode = this.ctx.createGain;
-    }
     /** @type {AudioGainNode} */
-    this.gainMaster = this.ctx.createGainNode();
+    this.gainMaster = this.ctx.createGain();
     /** @type {DynamicsCompressorNode} */
     this.compressor = this.ctx.createDynamicsCompressor();
     /** @type {AudioBufferSourceNode} */

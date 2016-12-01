@@ -147,8 +147,10 @@ export class SoundFontSynthesizerNote {
     this.updatePitchBend(this.pitchBend);
 
     // audio node
-    panner = this.panner = ctx.createStereoPanner();
-    output = this.gainOutput = ctx.createGainNode();
+    //panner = this.panner = ctx.createStereoPanner();
+    panner = this.panner = ctx.createPanner();
+
+    output = this.gainOutput = ctx.createGain();
     outputGain = output.gain;
 
     // filter
@@ -163,7 +165,7 @@ export class SoundFontSynthesizerNote {
       0,
       Math.cos(this.panpot * Math.PI / 2)
     );*/
-      //panner.setPosition(0,0,0);
+    panner.setPosition(0,0,0);
     //panner.pan(0)
 
     //---------------------------------------------------------------------------
@@ -230,10 +232,13 @@ export class SoundFontSynthesizerNote {
     //---------------------------------------------------------------------------
     // Release
     //---------------------------------------------------------------------------
-    output.gain.cancelScheduledValues(0);
+    output.gain.cancelScheduledValues(now);
     console.log(now, volEndTime);
-    output.gain.linearRampToValueAtTime(0, volEndTime);
-    bufferSource.playbackRate.cancelScheduledValues(0);
+    output.gain.setValueAtTime(output.gain.value, now);
+    output.gain.linearRampToValueAtTime(0.0, volEndTime);
+    console.log(output.gain.linearRampToValueAtTime);
+    console.log(output.gain);
+    bufferSource.playbackRate.cancelScheduledValues(now);
     bufferSource.playbackRate.linearRampToValueAtTime(this.computedPlaybackRate, modEndTime);
 
     //bufferSource.loop = false;

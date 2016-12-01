@@ -8,9 +8,8 @@ import WebMidi from 'webmidi'
 import audio_context from '../pojos/audiocontext'
 import features from './features'
 import uistate from './ui'
+import '../pojos/audiocontextmonkeypatch'
 import {SoundFontSynthesizer} from '../pojos/sfplayer/sound_font_synth'
-
-//import '../pojos/audiocontextmonkeypatch'
 
 var selected_midi_output;
 
@@ -101,6 +100,7 @@ const soundfonts = State('soundfonts',{
 
 export default soundfonts;
 
+//Depricated
 export function loadSoundFontsOld() {
   let {instrumentNames} = soundfonts.getState();
   let {ios, ogg} = features.getState();
@@ -134,7 +134,6 @@ export function loadSoundFontsOld() {
 export function loadSoundFonts() {
   var xhr = new XMLHttpRequest();
   let url = '/classical-instruments-voices.sf2';
-  //url = 'http://www.filedropper.com/classical-instruments-voices';
   xhr.open('GET', url);
   xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
   xhr.setRequestHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
@@ -173,7 +172,7 @@ function onSoundFontLoaded(event) {
 
 }
 
-
+//Depricated
 function loadInstrument(channels, instrument_name, percentage, options) {
   let aud_cxt = audio_context();
 

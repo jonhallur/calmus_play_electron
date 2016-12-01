@@ -9,6 +9,7 @@ import {NotificationManager} from 'react-notifications'
 import uuid from 'uuid'
 import soundfonts from './soundfont'
 import audio_context from '../pojos/audiocontext'
+import uistate from './ui'
 
 const MS_PER_MINUTE = 60;
 const DEFAULT_TEMPO = 120;
@@ -156,7 +157,7 @@ export function createMidiFile(midiEvents, {adjective, description}){
   addPlayerFile(data);
 }
 
-export function playFromList(compositions, players, index, interval) {
+export function playFromList(compositions, players, index, interval, event) {
   let id = players.length - 1 - index;
   let composition = compositions[id];
   let player_instance = players[id];
@@ -222,6 +223,7 @@ export function createDownload(filename,text) {
 export function activatePlaybackIOS(event) {
   // create empty buffer
   let myContext = audio_context();
+  uistate.debugPrint(myContext);
   var buffer = myContext.createBuffer(1, 1, 22050);
   var source = myContext.createBufferSource();
   source.buffer = buffer;
@@ -230,6 +232,15 @@ export function activatePlaybackIOS(event) {
   source.connect(myContext.destination);
 
   // play the file
-  source.start(0);
-
+  if(source.start !== undefined) {
+    source.start(0)
+  }
+  else if( source.noteOne !== undefined) {
+    source.noteOn(0)
+  }
+  setTimeout(function() {
+    if((source.playbackState === source.PLAYING_STATE || source.playbackState === source.FINISHED_STATE)) {
+      uistate.debugPrint("playing unlocked");
+    }
+  }, 0);
 }

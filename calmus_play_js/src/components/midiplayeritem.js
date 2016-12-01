@@ -5,6 +5,7 @@ import {Component} from 'jumpsuit'
 import {playFromList, stopPlayback, createDownload, activatePlaybackIOS} from '../state/player'
 import {saveComposition} from '../state/firebase'
 import {NotificationManager} from 'react-notifications'
+import uistate from '../state/ui'
 
 export default Component({
   getInitialState() {
@@ -21,13 +22,15 @@ export default Component({
   },
 
   onPlayBadgeClick(event) {
-    event.preventDefault();
+    event.stopPropagation();
+    uistate.debugPrint("OnPlayClicked");
     let id = event.target.id;
     if (this.props.isIOS) {
-      activatePlaybackIOS(event);
+      activatePlaybackIOS(event.nativeEvent);
       NotificationManager.info("Activating IOS audio", "IOS");
     }
-    playFromList(this.props.midiFiles, this.props.players, id, this.props.countdown)
+    playFromList(this.props.midiFiles, this.props.players, id, this.props.countdown, event.nativeEvent);
+    event.preventDefault();
   },
 
   onSaveBadgeClick(event) {
@@ -67,24 +70,24 @@ export default Component({
           <div className="player-content">
             <p className="player-title">{midiFile.name}
               <span className="badge player-tools">
-                <a id={index} href="#" onClick={this.onPlayBadgeClick}>
+                <span id={index} onClick={this.onPlayBadgeClick}>
                   <span id={index} className="white-glyph glyphicon glyphicon-play" aria-hidden="true"/>
-                </a>
+                </span>
               </span>
               <span className="badge player-tools">
-                <a id={index} href="#" onClick={this.onStopBadgeClick}>
+                <span id={index} href="#" onClick={this.onStopBadgeClick}>
                   <span id={index} className="white-glyph glyphicon glyphicon-stop" aria-hidden="true"/>
-                </a>
+                </span>
               </span>
               <span className="badge player-tools">
-                <a id={index} href="#" onClick={this.onDownloadBadgeClick}>
+                <span id={index} href="#" onClick={this.onDownloadBadgeClick}>
                   <span id={index} className="white-glyph glyphicon glyphicon-save" aria-hidden="true"/>
-                </a>
+                </span>
               </span>
               <span className="badge player-tools">
-                <a id={index} href="#" onClick={this.onSaveBadgeClick}>
+                <span id={index} href="#" onClick={this.onSaveBadgeClick}>
                   <span id={index} className="white-glyph glyphicon glyphicon-floppy-disk" aria-hidden="true"/>
-                </a>
+                </span>
               </span>
             </p>
             <p

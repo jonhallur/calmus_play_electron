@@ -1,7 +1,6 @@
 /**
  * Created by jonh on 28.11.2016.
  */
-
 var ctx = undefined;
 
 export default function getAudioContext() {
