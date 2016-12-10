@@ -51,6 +51,7 @@ class MIDI2SFTranslator {
   send(paramList) {
     if (selected_midi_output === undefined) {
       let {out_id} = midistate.getState();
+
       if (out_id !== ''){
         selected_midi_output = WebMidi.getOutputById(out_id)._midiOutput;
         selected_midi_output.send(paramList);
@@ -60,8 +61,8 @@ class MIDI2SFTranslator {
       selected_midi_output.send(paramList)
     }
     let status = paramList[0] >> 4;
-
-    if (this.noteOnHandler && this.noteOffHandler && paramList.length > 1) {
+    let {useInternal} = uistate.getState();
+    if (useInternal && this.noteOnHandler && this.noteOffHandler && paramList.length > 1) {
       console.log(paramList);
 
 

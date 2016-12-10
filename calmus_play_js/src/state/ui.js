@@ -58,6 +58,7 @@ const uistate = State('uistate', {
     settingsActive: true,
     inputcellsActive: false,
     compositionsActive: false,
+    useInternal: true,
   },
 
   setKeyValue: (state, payload) => ({

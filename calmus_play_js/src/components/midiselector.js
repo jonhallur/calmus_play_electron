@@ -3,6 +3,7 @@
  */
 import {Component} from 'jumpsuit'
 import {setMidiInput, setMidiOutput} from '../state/midi'
+import uistate from '../state/ui'
 
 export default Component({
   onMidiInChanged(event) {
@@ -40,6 +41,13 @@ export default Component({
               }
             </select>
           </div>
+          <label className="checkbox-inline">
+            <input
+              type="checkbox"
+              checked={this.props.useInternal}
+              onChange={e => uistate.setKeyValue({key: 'useInternal', value: e.target.checked})}
+            />Use Internal Sounds
+          </label>&nbsp;&nbsp;&nbsp;
 
         </div>
       )
@@ -50,5 +58,6 @@ export default Component({
   midiOuts: state.midistate.outs,
   midi_in_id: state.midistate.in_id,
   midi_out_id: state.midistate.out_id,
-  midi_player: state.midi_player.player
+  midi_player: state.midi_player.player,
+  useInternal: state.uistate.useInternal
 }))
