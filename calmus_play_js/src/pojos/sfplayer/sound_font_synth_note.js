@@ -165,7 +165,7 @@ export class SoundFontSynthesizerNote {
       0,
       Math.cos(this.panpot * Math.PI / 2)
     );*/
-    panner.setPosition(0,0,0);
+    panner.setPosition(0,0,1);
     //panner.pan(0)
 
     //---------------------------------------------------------------------------
@@ -233,11 +233,8 @@ export class SoundFontSynthesizerNote {
     // Release
     //---------------------------------------------------------------------------
     output.gain.cancelScheduledValues(now);
-    console.log(now, volEndTime);
     output.gain.setValueAtTime(output.gain.value, now);
     output.gain.linearRampToValueAtTime(0.0, volEndTime);
-    console.log(output.gain.linearRampToValueAtTime);
-    console.log(output.gain);
     bufferSource.playbackRate.cancelScheduledValues(now);
     bufferSource.playbackRate.linearRampToValueAtTime(this.computedPlaybackRate, modEndTime);
 

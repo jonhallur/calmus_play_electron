@@ -63,9 +63,6 @@ class MIDI2SFTranslator {
     let status = paramList[0] >> 4;
     let {useInternal} = uistate.getState();
     if (useInternal && this.noteOnHandler && this.noteOffHandler && paramList.length > 1) {
-      console.log(paramList);
-
-
       if (status === MIDI_STATUS_NOTE_OFF) {
         this.noteOffHandler(paramList)
       }
@@ -158,7 +155,8 @@ function onUpdateLoadingProgress (oEvent) {
 function onSoundFontLoaded(event) {
   let {translator} = soundfonts.getState();
   let data = event.target.response;
-  let synth = new SoundFontSynthesizer(new Uint8Array(data), audio_context());
+  let ctx = audio_context();
+  let synth = new SoundFontSynthesizer(new Uint8Array(data), ctx);
 
   synth.init();
   synth.start();
