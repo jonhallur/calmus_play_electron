@@ -10,6 +10,8 @@ import uuid from 'uuid'
 import soundfonts from './soundfont'
 import audio_context from '../pojos/audiocontext'
 import uistate from './ui'
+import '../pojos/blob'
+import {saveAs} from 'file-saver'
 
 const MS_PER_MINUTE = 60;
 const DEFAULT_TEMPO = 120;
@@ -206,18 +208,30 @@ export function stopPlayback(players, index, interval) {
 
 export function createDownload(filename,text) {
   // Set up the link
+  filename = filename.replace("  ", " ");
+  filename = filename.replace(" .", ".");
+  let typed = new Uint8Array(text);
+  var blob = new Blob([typed], {type: 'audio/midi'});
+  var urlmaker = webkitURL || URL;
+  var url = urlmaker.createObjectURL(blob);
+  window.open(url);
+  /*
+  var blob = new Blob([text], {type: " text/plain"});
+  saveAs(blob, filename);
+
   var link = document.createElement("a");
   link.setAttribute("target","_blank");
   if(Blob !== undefined) {
-    var blob = new Blob([text], {type: "text/plain"});
+    var blob = new Blob([text], {type: "audio/midi"});
     link.setAttribute("href", URL.createObjectURL(blob));
   } else {
-    link.setAttribute("href","data:text/plain," + encodeURIComponent(text));
+    link.setAttribute("href","data:audio/midi," + encodeURIComponent(text));
   }
   link.setAttribute("download",filename);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+  */
 }
 
 export function activatePlaybackIOS(event) {

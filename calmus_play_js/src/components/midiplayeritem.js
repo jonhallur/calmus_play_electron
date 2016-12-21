@@ -27,30 +27,32 @@ export default Component({
     let id = event.target.id;
     if (this.props.isIOS) {
       activatePlaybackIOS(event.nativeEvent);
-      NotificationManager.info("Activating IOS audio", "IOS");
     }
     playFromList(this.props.midiFiles, this.props.players, id, this.props.countdown, event.nativeEvent);
     event.preventDefault();
   },
 
   onSaveBadgeClick(event) {
-    event.preventDefault();
+    event.stopPropagation();
     let id = this.props.players.length - 1 - event.target.id;
     let composition = this.props.midiFiles[id];
     saveComposition(composition);
+    event.preventDefault();
   },
 
   onStopBadgeClick(event) {
-    event.preventDefault();
+    event.stopPropagation();
     let id = event.target.id;
-    stopPlayback(this.props.players, id, this.props.countdown)
+    stopPlayback(this.props.players, id, this.props.countdown);
+    event.preventDefault();
   },
 
   onDownloadBadgeClick(event) {
-    event.preventDefault();
+    event.stopPropagation();
     let id = this.props.players.length - 1 - event.target.id;
     let composition = this.props.midiFiles[id];
     createDownload(composition.name + ".mid", composition.data);
+    event.preventDefault();
   },
 
   render () {

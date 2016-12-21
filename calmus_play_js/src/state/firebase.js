@@ -183,7 +183,6 @@ function firebasePush(path, userUid, payload, errorTitle) {
   fbapp.database().ref(path + userUid).push(payload).catch(
     function (error) {
       if (error) {
-
         NotificationManager.error(error.message, errorTitle, 5000);
       }
     }
@@ -193,7 +192,7 @@ export function saveInputCell() {
   let {eventList, name} = inputcell.getState();
   let {userUid} = firestate.getState();
   if (userUid) {
-    let path = 'inputcell/';
+    let path = 'inputcells/';
     let data = {name: name, eventList: eventList, created: Date.now()};
     let errorTitle = "Save Input Cell";
     firebasePush(path, userUid, data, errorTitle);
