@@ -208,6 +208,7 @@ export function stopPlayback(players, index, interval) {
 
 export function createDownload(filename,text) {
   // Set up the link
+  /*
   filename = filename.replace("  ", " ");
   filename = filename.replace(" .", ".");
   let typed = new Uint8Array(text);
@@ -215,9 +216,7 @@ export function createDownload(filename,text) {
   var urlmaker = webkitURL || URL;
   var url = urlmaker.createObjectURL(blob);
   window.open(url);
-  /*
-  var blob = new Blob([text], {type: " text/plain"});
-  saveAs(blob, filename);
+  */
 
   var link = document.createElement("a");
   link.setAttribute("target","_blank");
@@ -231,7 +230,7 @@ export function createDownload(filename,text) {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  */
+
 }
 
 export function activatePlaybackIOS(event) {
