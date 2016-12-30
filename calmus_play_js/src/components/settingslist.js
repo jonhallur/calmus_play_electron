@@ -64,6 +64,7 @@ function setInputcell(key, list) {
       let {eventList, name} = cell;
       setInputCell(eventList);
       inputcell.setKeyValue({key: 'name', value: name});
+      ui.setPolyphony(1);
       sendCalmusRequest(true, true);
     }
   }

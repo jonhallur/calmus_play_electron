@@ -183,7 +183,7 @@ export function sendCalmusRequest(useInput, shouldRecompose) {
       exampleSocket.send(data);
       console.log(data);
       uistate.debugPrint(data);
-      NotificationManager.info("Composing...", "Calmus", 2000);
+      NotificationManager.info("Composing...", "Calmus", 3000);
     }
     else if(eventList !== undefined) {
       let new_cell = createListsFromEventList(eventList);
@@ -191,7 +191,7 @@ export function sendCalmusRequest(useInput, shouldRecompose) {
       console.log(requestString, orchestrationString);
       uistate.debugPrint(requestString + orchestrationString);
 
-      NotificationManager.info("Composing with Input...", "Calmus", 2000);
+      NotificationManager.info("Composing with Input...", "Calmus", 3000);
 
     }
     calmusState.setCalmusConnection(true)
@@ -200,13 +200,13 @@ export function sendCalmusRequest(useInput, shouldRecompose) {
   exampleSocket.onmessage = function (message) {
     if (message.data[0] === '(') {
       handleCalmusData(message.data);
-      NotificationManager.info("Composition Ready", "Calmus", 2000);
+      NotificationManager.info("Composition Ready", "Calmus", 3000);
       calmusState.setRequestString(requestString);
       calmusState.setCalmusConnection(false);
       calmusState.setWaitingForCalmus(false);
     }
     else {
-      NotificationManager.success(message.data, "Calmus Says", 5000);
+      NotificationManager.success(message.data, "Calmus Says", 3000);
     }
 
   };

@@ -186,6 +186,7 @@ export function playFromList(compositions, players, index, interval, event) {
   player.setCurrentLenght(play_time);
   player.setInterval(countdown);
   player.setCurrentId(uuid);
+  player.setKeyValue({key: 'playing', value: true});
   player_instance.play(function () {
     player_instance.stop();
     clearInterval(countdown);
@@ -202,7 +203,8 @@ export function stopPlayback(players, index, interval) {
   clearInterval(interval);
   player.setInterval(0);
   player.setCurrentPosition(0);
-  player.setCurrentId('')
+  player.setCurrentId('');
+  player.setKeyValue({key: 'playing', value: false});
 
 }
 
@@ -217,7 +219,8 @@ export function createDownload(filename,text) {
   var url = urlmaker.createObjectURL(blob);
   window.open(url);
   */
-
+  filename = filename.replace("  ", " ");
+  filename = filename.replace(" .", ".");
   var link = document.createElement("a");
   link.setAttribute("target","_blank");
   if(Blob !== undefined) {

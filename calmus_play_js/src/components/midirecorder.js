@@ -25,7 +25,7 @@ export default Component({
   onStartRecButtonClick(event) {
     event.preventDefault();
     if(this.props.isRecording) {
-      NotificationManager.warning("You are already recording", "Recorder", 2000);
+      NotificationManager.warning("You are already recording", "Recorder", 3000);
       return;
     }
     if(this.props.in_id === '') {
@@ -41,7 +41,7 @@ export default Component({
   onStopRecButtonClick(event) {
     event.preventDefault();
     if(!this.props.isRecording) {
-      NotificationManager.warning("You are not recording", "Recorder", 2000);
+      NotificationManager.warning("You are not recording", "Recorder", 3000);
       return
     }
     stopRecording(
@@ -50,6 +50,7 @@ export default Component({
       this.props.noteOffs,
       this.props.metronome
     );
+    uistate.setPolyphony(1);
     sendCalmusRequest(true, true);
 
   },
@@ -57,7 +58,7 @@ export default Component({
   onRecomposeButtonClick(event) {
     event.preventDefault();
     if(!this.props.recordingReady) {
-      NotificationManager.warning("You have nothing to recompose", "Recorder", 2000);
+      NotificationManager.warning("You have nothing to recompose", "Recorder", 3000);
       return;
     }
     sendCalmusRequest(true, false);
