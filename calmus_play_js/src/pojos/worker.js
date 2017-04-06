@@ -1,7 +1,4 @@
 /**
- * Created by jonh on 2.10.2016.
- */
-/**
  * Created by jonh on 27.9.2016.
  */
 

@@ -49,10 +49,19 @@ export default Component({
 
   onDownloadBadgeClick(event) {
     event.stopPropagation();
-    let id = this.props.players.length - 1 - event.target.id;
-    let composition = this.props.midiFiles[id];
+    let composition = this.props.midiFile.name;
     createDownload(composition.name + ".mid", composition.data);
     event.preventDefault();
+  },
+
+  onExportBadgeClick(event) {
+    event.stopPropagation();
+    console.log(this.props.midiFile);
+    console.log(this.props.midiFile);
+
+    let fileName = this.props.midiFile.name;
+    createDownload(fileName, this.props.midiFile.cell, "text/plain")
+
   },
 
   render () {
@@ -91,6 +100,12 @@ export default Component({
                   <span id={index} className="white-glyph glyphicon glyphicon-floppy-disk" aria-hidden="true"/>
                 </span>
               </span>
+              {midiFile.cell ?
+                <span className="badge player-tools">
+                  <span id={index} href="#" onClick={this.onExportBadgeClick}>
+                    <span id={index} className="white-glyph glyphicon glyphicon-export" aria-hidden="true"/>
+                  </span>
+                </span> : null }
             </p>
             <p
               className="player-subtitle"

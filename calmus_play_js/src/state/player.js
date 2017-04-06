@@ -126,7 +126,7 @@ export function addPlayerFile(data) {
   player.addPlayer(midiplayer);
 }
 
-export function createMidiFile(midiEvents, {adjective, description}){
+export function createMidiFile(midiEvents, {adjective, description}, cell=null){
   var file = createFileHeader();
   let midi_channels = [];
   let last_event_time = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
@@ -155,6 +155,7 @@ export function createMidiFile(midiEvents, {adjective, description}){
     uuid: uuid(),
     created: new Date().toLocaleDateString(),
     time: new Date().toLocaleTimeString(),
+    cell: cell
   };
   addPlayerFile(data);
 }
@@ -208,7 +209,7 @@ export function stopPlayback(players, index, interval) {
 
 }
 
-export function createDownload(filename,text) {
+export function createDownload(filename,text,type="audio/midi") {
   // Set up the link
   /*
   filename = filename.replace("  ", " ");
@@ -224,7 +225,7 @@ export function createDownload(filename,text) {
   var link = document.createElement("a");
   link.setAttribute("target","_blank");
   if(Blob !== undefined) {
-    var blob = new Blob([text], {type: "audio/midi"});
+    var blob = new Blob([text], {type: type});
     link.setAttribute("href", URL.createObjectURL(blob));
   } else {
     link.setAttribute("href","data:audio/midi," + encodeURIComponent(text));
@@ -233,7 +234,6 @@ export function createDownload(filename,text) {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-
 }
 
 export function activatePlaybackIOS(event) {

@@ -240,7 +240,6 @@ function createEventList(attackList, channelList, pitchList, durationList, veloc
   return midiEventList;
 }
 function handleCalmusData(calmusData) {
-  console.log(calmusData);
   let lists = calmusData.split('(');
   let attackList = lists[2].split(')')[0].split(' ');
   let channelList = lists[3].split(')')[0].split(' ');
@@ -248,15 +247,20 @@ function handleCalmusData(calmusData) {
   let durationList = lists[5].split(')')[0].split(' ');
   let velocityList = lists[6].split(')')[0].split(' ');
   let settingsList = lists[7].split(')')[0].split(' ');
+  let compositionText = lists[8].split(')')[0];
+  let saveFileStartingPoint = 0;
+  for(let i = 0; i < 9; i++) {
+    saveFileStartingPoint += lists[i].length;
+  }
+  saveFileStartingPoint += 9;
+  let cell = calmusData.slice(saveFileStartingPoint, calmusData.length - 1);
   let num_mel = settingsList[0];
   let interval = settingsList[1];
   let scale = settingsList[2];
-  let color = settingsList[3];
   uistate.setSize(num_mel);
   uistate.setInteval(interval);
   uistate.setScale(scale);
   uistate.setColor(color);
-  let compositionText = lists[8].split(')')[0];
   let adjective = compositionText.split(' - ')[0];
   let description = compositionText.split(' - ')[1];
   let midiEventList = createEventList(attackList, channelList, pitchList, durationList, velocityList);
@@ -268,7 +272,7 @@ function handleCalmusData(calmusData) {
   calmusState.setVelocityList(velocityList);
   calmusState.setMidiEventList(midiEventList);
   calmusState.setCompositionReady(true);
-  createMidiFile(midiEventList, {adjective, description})
+  createMidiFile(midiEventList, {adjective, description}, cell)
 }
 
 window.calmusstate = calmusState;
