@@ -254,6 +254,7 @@ function handleCalmusData(calmusData) {
   }
   saveFileStartingPoint += 9;
   let cell = calmusData.slice(saveFileStartingPoint, calmusData.length - 1);
+  cell = cell.replace(/CCL::/g, "");
   let num_mel = settingsList[0];
   let interval = settingsList[1];
   let scale = settingsList[2];

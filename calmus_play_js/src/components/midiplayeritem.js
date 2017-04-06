@@ -56,11 +56,9 @@ export default Component({
 
   onExportBadgeClick(event) {
     event.stopPropagation();
-    console.log(this.props.midiFile);
-    console.log(this.props.midiFile);
-
     let fileName = this.props.midiFile.name;
-    createDownload(fileName, this.props.midiFile.cell, "text/plain")
+    console.log(fileName);
+    createDownload(fileName, this.props.midiFile.cell, "octet/stream")
 
   },
 

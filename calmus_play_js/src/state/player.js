@@ -222,16 +222,17 @@ export function createDownload(filename,text,type="audio/midi") {
   */
   filename = filename.replace("  ", " ");
   filename = filename.replace(" .", ".");
+  filename = filename.replace("-", "");
   var link = document.createElement("a");
-  link.setAttribute("target","_blank");
+  document.body.appendChild(link);
+  link.style = "display: none";
   if(Blob !== undefined) {
     var blob = new Blob([text], {type: type});
-    link.setAttribute("href", URL.createObjectURL(blob));
+    link.href = URL.createObjectURL(blob);
   } else {
     link.setAttribute("href","data:audio/midi," + encodeURIComponent(text));
   }
-  link.setAttribute("download",filename);
-  document.body.appendChild(link);
+  link.download = filename;
   link.click();
   document.body.removeChild(link);
 }
