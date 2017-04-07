@@ -258,6 +258,7 @@ function handleCalmusData(calmusData) {
   let num_mel = settingsList[0];
   let interval = settingsList[1];
   let scale = settingsList[2];
+  let color = settingsList[3];
   uistate.setSize(num_mel);
   uistate.setInteval(interval);
   uistate.setScale(scale);

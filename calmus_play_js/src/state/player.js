@@ -222,7 +222,7 @@ export function createDownload(filename,text,type="audio/midi") {
   */
   filename = filename.replace("  ", " ");
   filename = filename.replace(" .", ".");
-  filename = filename.replace("-", "");
+  filename = filename.replace("\"", "");
   var link = document.createElement("a");
   document.body.appendChild(link);
   link.style = "display: none";
@@ -232,7 +232,7 @@ export function createDownload(filename,text,type="audio/midi") {
   } else {
     link.setAttribute("href","data:audio/midi," + encodeURIComponent(text));
   }
-  link.download = filename;
+  link.download = filename
   link.click();
   document.body.removeChild(link);
 }
