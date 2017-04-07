@@ -49,8 +49,10 @@ export default Component({
 
   onDownloadBadgeClick(event) {
     event.stopPropagation();
-    let composition = this.props.midiFile.name;
-    createDownload(composition.name + ".mid", composition.data);
+    let id = this.props.players.length - 1 - event.target.id;
+    let data = this.props.midiFile.data;
+    let filename = this.props.midiFile.name;
+    createDownload(filename + ".mid", data);
     event.preventDefault();
   },
 

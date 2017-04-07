@@ -220,9 +220,7 @@ export function createDownload(filename,text,type="audio/midi") {
   var url = urlmaker.createObjectURL(blob);
   window.open(url);
   */
-  filename = filename.replace("  ", " ");
-  filename = filename.replace(" .", ".");
-  filename = filename.replace("\"", "");
+  filename = toTitleCase(filename);
   var link = document.createElement("a");
   document.body.appendChild(link);
   link.style = "display: none";
@@ -232,9 +230,14 @@ export function createDownload(filename,text,type="audio/midi") {
   } else {
     link.setAttribute("href","data:audio/midi," + encodeURIComponent(text));
   }
-  link.download = filename
+  link.download = filename.replace(/[^A-Z^a-z]/g, "");
   link.click();
   document.body.removeChild(link);
+}
+
+function toTitleCase(str)
+{
+  return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
 
 export function activatePlaybackIOS(event) {
