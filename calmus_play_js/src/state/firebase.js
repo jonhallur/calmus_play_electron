@@ -27,7 +27,9 @@ const firestate = State('firestate', {
     settingsName: '',
     savedSettingsList: [],
     savedInputcellsList: [],
-    savedCompositionsList: []
+    savedCompositionsList: [],
+    ws: '',
+    wss: ''
   },
 
   setInitialized: (state, payload) => ({
@@ -91,6 +93,17 @@ export function initializeFirebase() {
           });
           firestate.setSavedSettingsList(settingsList);
         }, function (error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          NotificationManager.error(errorMessage, "Settings", 5000);
+        });
+        console.log("here");
+        fbapp.database().ref('server').on('value', function(snapshot){
+          if(snapshot.exists() && snapshot.val().wss && snapshot.val().ws) {
+            firestate.setKeyValue({key: 'ws', value: snapshot.val().ws});
+            firestate.setKeyValue({key: 'wss', value: snapshot.val().wss});
+          }
+        }, function(error){
           var errorCode = error.code;
           var errorMessage = error.message;
           NotificationManager.error(errorMessage, "Settings", 5000);

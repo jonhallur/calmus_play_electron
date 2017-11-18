@@ -3,7 +3,8 @@
  */
 import {State} from 'jumpsuit'
 import {NotificationManager} from 'react-notifications';
-import {createMidiFile} from './player'
+import {createMidiFile} from './player';
+import fireState from './firebase'
 import MidiEvent from '../pojos/midievent'
 import uistate from './ui'
 import midi from './midi'
@@ -168,12 +169,13 @@ export function sendCalmusRequest(useInput, shouldRecompose) {
   let requestString = inputValues.join(' ');
   let orchestrationString = createOrchestrationString(shouldRecompose);
   let {out_id} = midi.getState();
-  var url = "ws://89.160.139.113:9010";
+  var url = fireState.getState().ws;
   if (window.location.protocol === 'https:')
   {
-    url = "wss://89.160.139.113:9010";
+    url = fireState.getState().wss;
   }
   var exampleSocket = new WebSocket(url);
+  console.log("Connecting via: ", url);
   calmusState.setWaitingForCalmus(true);
   calmusState.setCompositionReady(false);
 
